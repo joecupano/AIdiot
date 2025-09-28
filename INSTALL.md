@@ -51,7 +51,7 @@ sudo apt install python3-setuptools python3-wheel
 
 ### 2. Ollama Installation
 
-Ollama is required for running the Mistral 7B language model locally.
+Ollama is the default option for running local language models (Mistral, CodeLlama, etc.). Alternative backends are also supported.
 
 #### Windows:
 1. Download from [ollama.ai](https://ollama.ai)
@@ -135,7 +135,8 @@ Both scripts will:
 - Create virtual environment
 - Install Python dependencies
 - Check/install Ollama
-- Download Mistral 7B model
+- Download Mistral 7B model (default backend)
+   - Or configure alternative backends (see BACKEND_CONFIG.md)
 - Verify Tesseract OCR
 - Run system initialization
 
@@ -202,7 +203,7 @@ python test_installation.py
 This will verify:
 - ✅ All Python packages are installed
 - ✅ Ollama is running and accessible
-- ✅ Mistral 7B model is available
+- ✅ Default LLM backend is available (Mistral 7B or configured alternative)
 - ✅ Document processor works
 - ✅ RAG system initializes correctly
 
@@ -401,7 +402,8 @@ If you need to remove AIdiot:
 
 3. **Remove Ollama models** (optional):
    ```bash
-   ollama rm mistral:7b
+   ollama rm mistral:7b  # Remove local models
+   # For other backends, remove API keys from environment
    ```
 
 4. **Uninstall Ollama** (optional):

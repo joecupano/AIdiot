@@ -79,13 +79,29 @@ if (Test-Path $tesseractPath) {
 Write-Host "Running system setup..." -ForegroundColor Yellow
 python main.py setup
 
+# Setup multi-backend support
+Write-Host "Setting up multi-backend LLM support..." -ForegroundColor Yellow
+python setup_backends.py
+
+# Test the installation
+Write-Host "Testing installation..." -ForegroundColor Yellow
+python test_multibackend.py
+
 Write-Host ""
 Write-Host "🎉 Setup complete!" -ForegroundColor Green
+Write-Host ""
+Write-Host "Backend Configuration:" -ForegroundColor Cyan
+Write-Host "• Default: Ollama with Mistral 7B (local, private)" -ForegroundColor White
+Write-Host "• Cloud Options: OpenAI GPT, Anthropic Claude (requires API keys)" -ForegroundColor White
+Write-Host "• Configure in .env file or see BACKEND_CONFIG.md" -ForegroundColor White
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "1. Add some documents: python main.py add-documents ./data/pdfs/" -ForegroundColor White
 Write-Host "2. Start interactive mode: python main.py interactive" -ForegroundColor White
 Write-Host "3. Or start web API: python main.py serve" -ForegroundColor White
 Write-Host ""
-Write-Host "For examples: python main.py examples" -ForegroundColor White
-Write-Host "For help: python main.py --help" -ForegroundColor White
+Write-Host "Documentation:" -ForegroundColor Cyan
+Write-Host "• Examples: python main.py examples" -ForegroundColor White
+Write-Host "• Help: python main.py --help" -ForegroundColor White
+Write-Host "• Backend Config: BACKEND_CONFIG.md" -ForegroundColor White
+Write-Host "• Model Alternatives: AI_MODEL_ALTERNATIVES.md" -ForegroundColor White

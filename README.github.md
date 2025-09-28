@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
-[![Ollama](https://img.shields.io/badge/Ollama-Mistral%207B-orange.svg)](https://ollama.ai)
+[![LLM](https://img.shields.io/badge/LLM-Multi--Backend-blue.svg)](https://github.com/joecupano/AIdiot)
 
 A standalone AI solution for technical design and analysis using RAG (Retrieval-Augmented Generation). Process PDF files, image-based PDFs, technical diagrams, and web content to provide intelligent assistance for technical projects.
 
@@ -28,10 +28,23 @@ chmod +x setup.sh
 python main.py interactive
 ```
 
+### 🔧 Backend Configuration
+```bash
+# Default: Local Ollama (privacy-focused)
+export LLM_BACKEND=ollama
+
+# Alternative: OpenAI (performance-focused)
+export LLM_BACKEND=openai
+export OPENAI_API_KEY=your_key_here
+
+# Quick setup with all options
+python setup_backends.py
+```
+
 ## ✨ Features
 
 - 🔧 **Multi-format Processing**: PDFs, images, web content
-- 🤖 **Local AI**: Mistral 7B via Ollama (no cloud required)
+- 🤖 **Multi-Backend AI**: Local (Ollama, LocalAI) or Cloud (OpenAI, Anthropic) options
 - 🖼️ **OCR Technology**: Extract text from technical diagrams
 - 🌐 **Dual Interface**: Command-line and REST API
 - 📊 **RAG Architecture**: Accurate, source-attributed answers
@@ -41,6 +54,8 @@ python main.py interactive
 
 - [Installation Guide](INSTALL.md) - Complete setup instructions
 - [Usage Examples](EXAMPLES.md) - Practical usage patterns
+- [Backend Configuration](BACKEND_CONFIG.md) - Multi-backend LLM setup
+- [AI Model Alternatives](AI_MODEL_ALTERNATIVES.md) - Compare different AI models
 - [Cross-Platform Guide](CROSS-PLATFORM.md) - Platform-specific info
 - [API Documentation](http://localhost:8000/docs) - Interactive API docs (when server running)
 
@@ -93,18 +108,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Ollama](https://ollama.ai) for local AI model hosting
+- [OpenAI](https://openai.com) & [Anthropic](https://anthropic.com) for cloud AI services
 - [LangChain](https://langchain.com) for RAG framework
 - [FastAPI](https://fastapi.tiangolo.com) for web API
 - [Rich](https://rich.readthedocs.io) for beautiful CLI output
 
 ## 📈 Roadmap
 
-- [ ] Additional AI models support
+- [x] Multi-backend LLM support (Ollama, OpenAI, Anthropic, LocalAI)
+- [x] Domain-agnostic architecture
 - [ ] Enhanced OCR for handwritten text
 - [ ] Multi-language support
 - [ ] Vector database optimization
 - [ ] Cloud deployment guides
 - [ ] Plugin system for custom processors
+- [ ] Model performance benchmarking tools
 
 ---
 

@@ -12,7 +12,8 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
 - **Dual Interface**: Command-line tool and REST API for web applications
 
 🧠 **AI-Powered Analysis:**
-- **Mistral 7B LLM**: Lightweight but powerful language model via Ollama
+- **Multi-Backend LLM Support**: Choose from local (Ollama, LocalAI) or cloud (OpenAI, Anthropic) models
+- **Automatic Fallback**: Seamlessly switches between primary and backup LLM services
 - **RAG Architecture**: Combines retrieval with generation for accurate, contextual answers
 - **Technical Focus**: Specialized prompts for technical design and analysis (configurable)
 - **Source Attribution**: Shows which documents contributed to each answer
@@ -62,6 +63,38 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
    # Initialize system
    python main.py setup
    ```
+
+### Backend Configuration
+
+Choose your preferred LLM backend by setting environment variables or creating a `.env` file:
+
+**Option 1: Local (Privacy-focused)**
+```bash
+# Default - Ollama with Mistral
+export LLM_BACKEND=ollama
+export OLLAMA_MODEL=mistral:7b
+```
+
+**Option 2: Cloud (Performance-focused)**
+```bash
+# OpenAI GPT
+export LLM_BACKEND=openai
+export OPENAI_API_KEY=your_key_here
+export OPENAI_MODEL=gpt-4
+
+# Or Anthropic Claude
+export LLM_BACKEND=anthropic
+export ANTHROPIC_API_KEY=your_key_here
+export ANTHROPIC_MODEL=claude-3-sonnet-20240229
+```
+
+**Option 3: Quick Setup**
+```bash
+# Run the multi-backend setup script
+python setup_backends.py
+```
+
+See [BACKEND_CONFIG.md](BACKEND_CONFIG.md) for detailed configuration options and [AI_MODEL_ALTERNATIVES.md](AI_MODEL_ALTERNATIVES.md) for comparison of different models.
 
 ## Usage
 
@@ -234,14 +267,17 @@ AIdiot/
 - **Embeddings**: Sentence Transformers (all-MiniLM-L6-v2)
 - **Vector Database**: ChromaDB for persistent storage
 - **Retrieval**: Maximal Marginal Relevance (MMR) for diverse results
-- **LLM**: Ollama with Mistral 7B model
+- **LLM Backends**: Multi-backend support with automatic fallback
+  - **Local**: Ollama (Mistral, CodeLlama), LocalAI, text-generation-webui
+  - **Cloud**: OpenAI GPT, Anthropic Claude, Google PaLM
+  - **Hybrid**: Primary + fallback configuration for reliability
 - **Chunking**: Recursive character splitting with overlap
 
 ### Document Processing Pipeline
 1. **PDF Processing**: PyMuPDF for text extraction, OCR fallback for images
 2. **Image Enhancement**: OpenCV preprocessing for better OCR accuracy
 3. **Component Extraction**: Regex patterns for electronic component values
-4. **Relevance Filtering**: Amateur radio topic classification
+4. **Relevance Filtering**: Domain-configurable topic classification
 5. **Chunking and Embedding**: Optimized for technical content retrieval
 
 ### Specialized Features

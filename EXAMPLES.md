@@ -1,6 +1,8 @@
 # AIdiot Usage Examples
 
-This file contains practical examples of how to use the Amateur Radio AI Assistant.
+# Examples
+
+This file contains practical examples of how to use the AI Assistant for technical domains.
 
 ## 1. Basic Setup and First Use
 
@@ -166,12 +168,12 @@ print(f"System healthy: {health['overall_healthy']}")
     </style>
 </head>
 <body>
-    <h1>🚀 AIdiot - Amateur Radio AI Assistant</h1>
+    <h1>🚀 AIdiot - Technical AI Assistant</h1>
     
     <div class="chat-container" id="chatContainer"></div>
     
     <div>
-        <input type="text" id="questionInput" placeholder="Ask your amateur radio question...">
+        <input type="text" id="questionInput" placeholder="Ask your technical question...">
         <button onclick="askQuestion()">Ask</button>
     </div>
     
@@ -275,10 +277,10 @@ python main.py add-documents ./manuals/arrl/
 python main.py add-documents ./manuals/manufacturers/
 python main.py add-documents ./research_papers/
 
-# Process schematics from various sources
-python main.py add-documents ./schematics/filters/
-python main.py add-documents ./schematics/amplifiers/
-python main.py add-documents ./schematics/antennas/
+# Process images from various sources
+python main.py add-documents ./data/images/diagrams/
+python main.py add-documents ./data/images/circuits/
+python main.py add-documents ./data/images/references/
 
 # Add multiple URLs (create a script)
 # add_urls.sh:
@@ -378,7 +380,7 @@ AIDIOT_API = "http://localhost:8000"
 
 @bot.command(name='ham')
 async def ham_question(ctx, *, question):
-    """Ask the amateur radio AI assistant a question."""
+    """Ask the technical AI assistant a question."""
     try:
         response = requests.post(f"{AIDIOT_API}/query", json={
             "question": question,
@@ -447,4 +449,4 @@ python main.py stats
 # Restart: python main.py serve
 ```
 
-This comprehensive set of examples should help users get the most out of the AIdiot Amateur Radio AI Assistant!
+This comprehensive set of examples should help users get the most out of the AIdiot Technical AI Assistant!

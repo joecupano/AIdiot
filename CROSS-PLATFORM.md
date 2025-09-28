@@ -12,12 +12,12 @@ AIdiot AI Assistant is fully cross-platform and runs natively on Windows 11, Ubu
 
 ### Installation Methods
 
-| Platform | Setup Method | Command |
-|----------|-------------|---------|
-| **Windows 11** | PowerShell Script | `.\setup.ps1` |
-| **Ubuntu 24.04** | Bash Script | `./setup.sh` |
-| **macOS** | Manual/Homebrew | See INSTALL.md |
-| **Other Linux** | Manual | See INSTALL.md |
+| Platform | Setup Method | Command | Backend Setup |
+|----------|-------------|---------|---------------|
+| **Windows 11** | PowerShell Script | `.\setup.ps1` | `python setup_backends.py` |
+| **Ubuntu 24.04** | Bash Script | `./setup.sh` | `python setup_backends.py` |
+| **macOS** | Manual/Homebrew | See INSTALL.md | `python setup_backends.py` |
+| **Other Linux** | Manual | See INSTALL.md | `python setup_backends.py` |
 
 ## 🔧 **Platform-Specific Features**
 
@@ -25,6 +25,11 @@ AIdiot AI Assistant is fully cross-platform and runs natively on Windows 11, Ubu
 - **Automatic Detection**: Uses `pathlib` for cross-platform path handling
 - **Tesseract OCR**: Auto-detects installation path on all platforms
 - **Data Directories**: Consistent structure across platforms
+
+### LLM Backend Support
+- **Local Backends**: Ollama, LocalAI, text-generation-webui (all platforms)
+- **Cloud Backends**: OpenAI, Anthropic (platform-agnostic APIs)
+- **Auto-Configuration**: Platform-specific setup scripts handle dependencies
 
 ### Dependencies
 All core dependencies are cross-platform:

@@ -6,7 +6,6 @@ from chromadb.config import Settings
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.schema import Document
-from langchain.llms import Ollama
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 
@@ -14,6 +13,7 @@ from .config import (
     VECTOR_DB_DIR, EMBEDDING_MODEL, OLLAMA_MODEL, 
     OLLAMA_BASE_URL, VECTOR_DB_COLLECTION
 )
+from .llm_factory import LLMFactory, HybridLLM, load_llm_config
 
 logger = logging.getLogger(__name__)
 
@@ -51,13 +51,39 @@ class DomainRAG:
                 embedding_function=self.embeddings
             )
             
-            # Initialize LLM
-            logger.info("Connecting to Ollama LLM...")
-            self.llm = Ollama(
-                model=OLLAMA_MODEL,
-                base_url=OLLAMA_BASE_URL,
-                temperature=0.1  # Low temperature for technical accuracy
-            )
+            # Initialize LLM with factory pattern
+            logger.info("Initializing LLM backend...")
+            backend_type, backend_config = load_llm_config()
+            
+            # Create primary backend
+            primary_backend = LLMFactory.create_backend(backend_type, backend_config)
+            
+            # Try to create fallback backend (Ollama if not primary)
+            fallback_backend = None
+            if backend_type != 'ollama':
+                try:
+                    fallback_config = {
+                        'model': OLLAMA_MODEL,
+                        'base_url': OLLAMA_BASE_URL,
+                        'temperature': 0.1
+                    }
+                    fallback_backend = LLMFactory.create_backend('ollama', fallback_config)
+                    logger.info("Fallback Ollama backend configured")
+                except Exception as e:
+                    logger.warning(f"Could not create Ollama fallback: {e}")
+            
+            # Create hybrid LLM with fallback
+            self.hybrid_llm = HybridLLM(primary_backend, fallback_backend)
+            
+            # For compatibility with existing LangChain code, wrap the backend
+            class LangChainWrapper:
+                def __init__(self, backend):
+                    self.backend = backend
+                
+                def __call__(self, prompt):
+                    return self.backend.query(prompt)
+            
+            self.llm = LangChainWrapper(primary_backend)
             
             # Create specialized prompt template
             prompt_template = self._create_domain_prompt()
@@ -258,8 +284,13 @@ Answer:"""
                 count = self.vectorstore._collection.count()
                 status["vectorstore"] = count >= 0
             
-            # Test LLM
-            if self.llm:
+            # Test LLM (both primary and fallback if available)
+            if hasattr(self, 'hybrid_llm'):
+                llm_health = self.hybrid_llm.health_check()
+                status["llm"] = llm_health.get('primary', False)
+                if llm_health.get('fallback') is not None:
+                    status["llm_fallback"] = llm_health['fallback']
+            elif self.llm:
                 test_response = self.llm("Say 'OK'")
                 status["llm"] = "OK" in test_response or "ok" in test_response.lower()
             

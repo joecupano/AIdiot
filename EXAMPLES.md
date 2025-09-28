@@ -1,0 +1,450 @@
+# AIdiot Usage Examples
+
+This file contains practical examples of how to use the Amateur Radio AI Assistant.
+
+## 1. Basic Setup and First Use
+
+```bash
+# Initial setup
+python main.py setup
+
+# Add your first document (PDF manual)
+python main.py add-documents "ARRL_Antenna_Book.pdf"
+
+# Ask your first question
+python main.py query "What is the formula for dipole antenna length?"
+
+# Check system status
+python main.py health
+python main.py stats
+```
+
+## 2. Building a Knowledge Base
+
+```bash
+# Add multiple PDFs from a directory
+python main.py add-documents ./rf_manuals/
+
+# Add schematic diagrams
+python main.py add-documents filter_schematic.png
+python main.py add-documents amplifier_circuit.jpg
+
+# Add web content
+python main.py add-documents --url https://www.arrl.org/antenna-basics
+python main.py add-documents --url https://ham.stackexchange.com/questions/tagged/antenna-design
+```
+
+## 3. Interactive Mode Examples
+
+```bash
+# Start interactive mode
+python main.py interactive
+
+# Example conversation:
+📡 Your question: How do I calculate the resonant frequency of an LC circuit?
+
+🤖 Answer: The resonant frequency of an LC circuit is calculated using the formula:
+
+f = 1 / (2π√(LC))
+
+Where:
+- f = resonant frequency in Hz
+- L = inductance in henries (H)
+- C = capacitance in farads (F)
+
+For example, with L = 10µH and C = 100pF:
+f = 1 / (2π√(10×10⁻⁶ × 100×10⁻¹²))
+f = 1 / (2π√(10⁻¹⁵))
+f ≈ 15.92 MHz
+
+📚 Sources: RF_Handbook.pdf, LC_Circuits.pdf
+
+📡 Your question: What's the bandwidth of this circuit?
+
+🤖 Answer: The bandwidth of an LC resonant circuit depends on its Q factor:
+
+BW = f₀ / Q
+
+Where Q (quality factor) = ωL / R = (1/R)√(L/C)
+
+For the previous example with Q = 100:
+BW = 15.92 MHz / 100 = 159.2 kHz
+
+The 3dB bandwidth extends from f₀ - BW/2 to f₀ + BW/2.
+
+📡 Your question: stats
+
+📊 Knowledge Base Stats: {
+  "total_documents": 157,
+  "document_types": {
+    "pdf": 89,
+    "web": 45,
+    "schematic": 23
+  },
+  "unique_sources": 34
+}
+```
+
+## 4. Web API Examples
+
+### Python Client
+
+```python
+import requests
+import json
+
+# Base URL for the API
+base_url = "http://localhost:8000"
+
+# Start the API server first
+# python main.py serve
+
+# 1. Ask a question
+def ask_question(question):
+    response = requests.post(f"{base_url}/query", json={
+        "question": question,
+        "include_sources": True
+    })
+    return response.json()
+
+# Example questions
+answer = ask_question("How do I design a Yagi antenna for 2 meters?")
+print(f"Answer: {answer['answer']}")
+print(f"Sources: {len(answer['sources'])} documents")
+
+# 2. Upload a document
+def upload_document(file_path):
+    with open(file_path, 'rb') as f:
+        response = requests.post(f"{base_url}/documents/upload", 
+                               files={"file": f})
+    return response.json()
+
+result = upload_document("antenna_manual.pdf")
+print(f"Upload result: {result['message']}")
+
+# 3. Add URL content
+def add_url(url):
+    response = requests.post(f"{base_url}/documents/url", json={"url": url})
+    return response.json()
+
+result = add_url("https://www.arrl.org/impedance-matching")
+print(f"URL processing: {result['message']}")
+
+# 4. Get statistics
+def get_stats():
+    response = requests.get(f"{base_url}/stats")
+    return response.json()
+
+stats = get_stats()
+print(f"Total documents: {stats['total_documents']}")
+print(f"Document types: {stats['document_types']}")
+
+# 5. Health check
+def health_check():
+    response = requests.get(f"{base_url}/health")
+    return response.json()
+
+health = health_check()
+print(f"System healthy: {health['overall_healthy']}")
+```
+
+### JavaScript/HTML Client
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AIdiot Web Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .chat-container { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; margin: 10px 0; }
+        .message { margin: 10px 0; }
+        .user { color: blue; }
+        .ai { color: green; }
+        input[type="text"] { width: 70%; padding: 5px; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 AIdiot - Amateur Radio AI Assistant</h1>
+    
+    <div class="chat-container" id="chatContainer"></div>
+    
+    <div>
+        <input type="text" id="questionInput" placeholder="Ask your amateur radio question...">
+        <button onclick="askQuestion()">Ask</button>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg">
+        <button onclick="uploadFile()">Upload Document</button>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        async function askQuestion() {
+            const question = document.getElementById('questionInput').value;
+            if (!question) return;
+            
+            addMessage(`You: ${question}`, 'user');
+            document.getElementById('questionInput').value = '';
+            
+            try {
+                const response = await fetch(`${API_BASE}/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        question: question,
+                        include_sources: true 
+                    })
+                });
+                
+                const data = await response.json();
+                addMessage(`AI: ${data.answer}`, 'ai');
+                
+                if (data.sources && data.sources.length > 0) {
+                    const sources = data.sources.map(s => s.metadata.filename || 'web').join(', ');
+                    addMessage(`Sources: ${sources}`, 'sources');
+                }
+            } catch (error) {
+                addMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`${API_BASE}/documents/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                addMessage(`Upload: ${data.message}`, 'system');
+                fileInput.value = '';
+            } catch (error) {
+                addMessage(`Upload Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function addMessage(text, className) {
+            const container = document.getElementById('chatContainer');
+            const message = document.createElement('div');
+            message.className = `message ${className}`;
+            message.textContent = text;
+            container.appendChild(message);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // Allow Enter key to ask questions
+        document.getElementById('questionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+        
+        // Check system health on load
+        fetch(`${API_BASE}/health`)
+            .then(response => response.json())
+            .then(data => {
+                const status = data.overall_healthy ? 'System ready!' : 'System issues detected';
+                addMessage(`🚀 ${status}`, 'system');
+            })
+            .catch(error => {
+                addMessage('❌ Cannot connect to API server. Start with: python main.py serve', 'error');
+            });
+    </script>
+</body>
+</html>
+```
+
+## 5. Advanced Usage Patterns
+
+### Batch Processing Documents
+
+```bash
+# Process all PDFs in multiple directories
+python main.py add-documents ./manuals/arrl/
+python main.py add-documents ./manuals/manufacturers/
+python main.py add-documents ./research_papers/
+
+# Process schematics from various sources
+python main.py add-documents ./schematics/filters/
+python main.py add-documents ./schematics/amplifiers/
+python main.py add-documents ./schematics/antennas/
+
+# Add multiple URLs (create a script)
+# add_urls.sh:
+python main.py add-documents --url "https://www.arrl.org/antenna-basics"
+python main.py add-documents --url "https://www.arrl.org/impedance-matching"
+python main.py add-documents --url "https://www.arrl.org/smith-chart"
+python main.py add-documents --url "https://www.arrl.org/rf-design"
+```
+
+### Specialized Question Examples
+
+```bash
+# Antenna Design Questions
+python main.py query "Calculate the dimensions for a 3-element Yagi antenna for 146 MHz"
+python main.py query "What is the radiation resistance of a quarter-wave monopole?"
+python main.py query "How do I design a log-periodic dipole array for 2-30 MHz?"
+
+# Filter Design Questions  
+python main.py query "Design a 7th order Chebyshev low-pass filter for 30 MHz with 1dB ripple"
+python main.py query "What component values do I need for a pi-network impedance matcher?"
+python main.py query "How do I calculate insertion loss of a bandpass filter?"
+
+# Circuit Analysis Questions
+python main.py query "Analyze the stability of this RF amplifier circuit" # (with image upload)
+python main.py query "What is the gain and noise figure of a cascode amplifier?"
+python main.py query "How do I calculate the conversion gain of a mixer circuit?"
+
+# Practical Questions
+python main.py query "My SWR is 3:1 on 20 meters. What could be wrong?"
+python main.py query "How do I reduce harmonic distortion in a Class C amplifier?"
+python main.py query "What transmission line should I use for 1296 MHz?"
+```
+
+### Knowledge Base Management
+
+```bash
+# Regular maintenance
+python main.py stats          # Check current status
+python main.py health        # Verify system health
+
+# Backup and restore (manual process)
+# The vector database is stored in ./data/vector_db/
+# Back up this directory to preserve your knowledge base
+
+# Clear and rebuild
+python main.py clear-db      # Clear all documents
+python main.py add-documents ./backup_docs/  # Rebuild from backup
+
+# Performance monitoring
+python main.py query "test query" --no-sources  # Fast query without sources
+```
+
+## 6. Integration Examples
+
+### Flask Web Application
+
+```python
+from flask import Flask, request, jsonify, render_template
+import requests
+
+app = Flask(__name__)
+AIDIOT_API = "http://localhost:8000"
+
+@app.route('/')
+def index():
+    return render_template('chat.html')
+
+@app.route('/api/ask', methods=['POST'])
+def ask():
+    question = request.json.get('question')
+    response = requests.post(f"{AIDIOT_API}/query", json={
+        "question": question,
+        "include_sources": True
+    })
+    return jsonify(response.json())
+
+@app.route('/api/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    files = {'file': (file.filename, file.stream, file.content_type)}
+    response = requests.post(f"{AIDIOT_API}/documents/upload", files=files)
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+```
+
+### Discord Bot Integration
+
+```python
+import discord
+import requests
+from discord.ext import commands
+
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.default())
+AIDIOT_API = "http://localhost:8000"
+
+@bot.command(name='ham')
+async def ham_question(ctx, *, question):
+    """Ask the amateur radio AI assistant a question."""
+    try:
+        response = requests.post(f"{AIDIOT_API}/query", json={
+            "question": question,
+            "include_sources": False
+        })
+        data = response.json()
+        
+        # Discord has a 2000 character limit
+        answer = data['answer']
+        if len(answer) > 1900:
+            answer = answer[:1900] + "... (truncated)"
+        
+        await ctx.send(f"🤖 **Answer:** {answer}")
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error: {str(e)}")
+
+@bot.command(name='hamstats')
+async def ham_stats(ctx):
+    """Get knowledge base statistics."""
+    try:
+        response = requests.get(f"{AIDIOT_API}/stats")
+        data = response.json()
+        
+        embed = discord.Embed(title="📊 AIdiot Knowledge Base Stats", color=0x00ff00)
+        embed.add_field(name="Total Documents", value=data['total_documents'])
+        embed.add_field(name="Unique Sources", value=data['unique_sources'])
+        
+        await ctx.send(embed=embed)
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error: {str(e)}")
+
+bot.run('YOUR_DISCORD_BOT_TOKEN')
+```
+
+## 7. Performance Tips
+
+### Optimizing Query Performance
+
+```bash
+# Use specific technical terms for better results
+python main.py query "Smith chart impedance transformation 50 ohm to 75 ohm"
+# Better than: "how to match impedances"
+
+# Include frequency information when relevant
+python main.py query "VHF antenna design 144-148 MHz"
+# Better than: "VHF antenna design"
+
+# Be specific about component types
+python main.py query "ceramic capacitor temperature coefficient C0G 1nF 50V"
+# Better than: "capacitor specifications"
+```
+
+### System Performance
+
+```bash
+# Monitor system health regularly
+python main.py health
+
+# Check for optimal chunk count (aim for 100-10000 documents)
+python main.py stats
+
+# Restart if memory usage becomes high
+# Stop: Ctrl+C
+# Restart: python main.py serve
+```
+
+This comprehensive set of examples should help users get the most out of the AIdiot Amateur Radio AI Assistant!

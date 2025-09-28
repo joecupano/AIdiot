@@ -1,0 +1,25 @@
+# Sample URLs for Technical Content
+
+# Example Technical Resources (RF/Electronics focused)
+https://www.arrl.org/antenna-basics
+https://www.arrl.org/impedance-matching
+https://www.arrl.org/rf-design
+https://www.arrl.org/microwave-and-uhf-techniques
+
+# Technical Articles (example URLs - adjust for your domain)
+# https://example.com/technical-articles/design-guides
+# https://example.com/technical-articles/circuit-analysis
+
+# Technical Q&A Sites
+https://electronics.stackexchange.com/questions/tagged/rf
+https://electronics.stackexchange.com/questions/tagged/antenna
+https://electronics.stackexchange.com/questions/tagged/circuit-design
+
+# Technical References
+https://en.wikipedia.org/wiki/Smith_chart
+https://en.wikipedia.org/wiki/Electronic_filter
+https://en.wikipedia.org/wiki/Radio_frequency
+
+# Note: Add these URLs using the command:
+# python main.py add-documents --url [URL]
+# Customize this list for your specific technical domain

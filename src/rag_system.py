@@ -3,11 +3,12 @@ from typing import List, Optional, Any, Dict
 from pathlib import Path
 import chromadb
 from chromadb.config import Settings
-from langchain.vectorstores import Chroma
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.schema import Document
-from langchain.chains import RetrievalQA
-from langchain.prompts import PromptTemplate
+from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
 from .config import (
     VECTOR_DB_DIR, EMBEDDING_MODEL, OLLAMA_MODEL, 
@@ -24,6 +25,7 @@ class DomainRAG:
     def __init__(self):
         self.embeddings = None
         self.vectorstore = None
+        self.retriever = None
         self.llm = None
         self.qa_chain = None
         self._initialize_components()
@@ -88,16 +90,21 @@ class DomainRAG:
             # Create specialized prompt template
             prompt_template = self._create_domain_prompt()
             
-            # Initialize QA chain
-            self.qa_chain = RetrievalQA.from_chain_type(
-                llm=self.llm,
-                chain_type="stuff",
-                retriever=self.vectorstore.as_retriever(
-                    search_type="mmr",  # Maximal Marginal Relevance
-                    search_kwargs={"k": 5, "fetch_k": 10}
-                ),
-                chain_type_kwargs={"prompt": prompt_template},
-                return_source_documents=True
+            # Initialize retriever
+            self.retriever = self.vectorstore.as_retriever(
+                search_type="mmr",  # Maximal Marginal Relevance
+                search_kwargs={"k": 5, "fetch_k": 10}
+            )
+            
+            # Create RAG chain using newer LangChain approach
+            def format_docs(docs):
+                return "\n\n".join(doc.page_content for doc in docs)
+            
+            self.qa_chain = (
+                {"context": self.retriever | format_docs, "question": RunnablePassthrough()}
+                | prompt_template
+                | self.llm
+                | StrOutputParser()
             )
             
             logger.info("RAG system initialized successfully")
@@ -184,17 +191,19 @@ Answer:"""
             
             logger.info(f"Processing query: {question}")
             
-            # Query the chain
-            result = self.qa_chain({"query": question})
+            # Query the chain - new approach returns string directly
+            answer = self.qa_chain.invoke(question)
             
             response = {
-                "answer": result["result"],
+                "answer": answer,
                 "question": question,
                 "sources": []
             }
             
-            if include_sources and "source_documents" in result:
-                for doc in result["source_documents"]:
+            # Get source documents separately if requested
+            if include_sources and self.retriever:
+                source_docs = self.retriever.get_relevant_documents(question)
+                for doc in source_docs:
                     source_info = {
                         "content": doc.page_content[:200] + "...",  # First 200 chars
                         "metadata": doc.metadata

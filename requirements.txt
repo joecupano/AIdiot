@@ -1,43 +1,47 @@
-# Core RAG and LLM dependencies
-langchain==0.1.0
-langchain-community==0.0.13
-langchain-core==0.1.7
-chromadb==0.4.22
-sentence-transformers==2.2.2
+# Core RAG and LLM dependencies - Updated for Python 3.12 compatibility
+langchain>=0.1.0
+langchain-community>=0.0.25
+langchain-core>=0.1.25
+langchain-openai>=0.0.6
+langchain-anthropic>=0.1.4
+langchain-chroma>=0.1.0
+langchain-huggingface>=0.0.2
+langchain-text-splitters>=0.0.1
+chromadb>=0.4.22
+sentence-transformers>=2.2.2
 
-# Document processing
-pypdf2==3.0.1
-pymupdf==1.23.21
-pdf2image==1.17.0
-pillow==10.2.0
-pytesseract==0.3.10
+# Document processing - Updated for Python 3.12
+pypdf2>=3.0.1
+pymupdf>=1.23.21
+pdf2image>=1.17.0
+pillow>=10.2.0
+pytesseract>=0.3.10
 
-# Image processing for schematics
-opencv-python==4.9.0.80
-numpy==1.24.3
-matplotlib==3.7.4
+# Image processing for schematics - Updated versions
+opencv-python>=4.9.0.80
+numpy>=1.24.3,<2.0.0  # Pin to avoid compatibility issues
+matplotlib>=3.7.4
 
-# Web scraping and API
-requests==2.31.0
-beautifulsoup4==4.12.2
-fastapi==0.108.0
-uvicorn==0.25.0
-pydantic==2.5.2
+# Web scraping and API - Updated versions
+requests>=2.31.0
+beautifulsoup4>=4.12.2
+fastapi>=0.108.0
+uvicorn>=0.25.0
+pydantic>=2.5.2
 
-# CLI framework
-click==8.1.7
-rich==13.7.0
-typer==0.9.0
+# CLI framework - Updated for Python 3.12
+click>=8.1.7
+rich>=13.7.0
+typer>=0.9.0
 
-# Utilities
-python-dotenv==1.0.0
-pathlib==1.0.1
-tqdm==4.66.1
+# Utilities - Updated versions  
+python-dotenv>=1.0.0
+tqdm>=4.66.1
 
-# Local LLM support
+# Local LLM support - Updated
 ollama>=0.1.7
 
-# Optional cloud provider support
+# Optional cloud provider support - Updated
 openai>=1.3.0
 anthropic>=0.7.0
 

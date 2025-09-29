@@ -10,8 +10,8 @@ import numpy as np
 from pdf2image import convert_from_path
 import requests
 from bs4 import BeautifulSoup
-from langchain.schema import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from .config import (
     TESSERACT_PATH, DPI, CHUNK_SIZE, CHUNK_OVERLAP,

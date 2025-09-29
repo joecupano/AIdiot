@@ -1,6 +1,6 @@
 # AIdiot Installation Guide
 
-Complete installation guide for the AI Assistant.
+Complete installation guide for the AI Assistant with Python 3.12 support.
 
 ## System Requirements
 
@@ -9,7 +9,7 @@ Complete installation guide for the AI Assistant.
   - ✅ **Ubuntu 20.04/22.04/24.04** (fully supported)
   - ✅ **Other Linux distributions** (Debian-based recommended)
   - ✅ **macOS** (Intel and Apple Silicon)
-- **Python**: 3.8 or higher
+- **Python**: 3.9-3.12 (3.12 fully supported and recommended)
 - **RAM**: 8GB minimum, 16GB recommended
 - **Storage**: 10GB free space (for models and documents)
 - **Internet**: Required for initial model download
@@ -19,7 +19,7 @@ Complete installation guide for the AI Assistant.
 ### 1. Python Installation
 
 #### Windows:
-1. Download Python from [python.org](https://www.python.org/downloads/)
+1. Download Python 3.12 from [python.org](https://www.python.org/downloads/)
 2. During installation, check "Add Python to PATH"
 3. Verify installation:
    ```powershell
@@ -30,7 +30,7 @@ Complete installation guide for the AI Assistant.
 #### macOS:
 ```bash
 # Using Homebrew (recommended)
-brew install python
+brew install python@3.12
 
 # Or download from python.org
 # Verify installation
@@ -41,12 +41,13 @@ pip3 --version
 #### Linux (Ubuntu 20.04/22.04/24.04):
 ```bash
 sudo apt update
-sudo apt install python3 python3-pip python3-venv python3-dev build-essential
-python3 --version
+sudo apt install python3.12 python3.12-pip python3.12-venv python3.12-dev build-essential
+python3.12 --version
 pip3 --version
 
-# For Ubuntu 24.04, you may also want:
-sudo apt install python3-setuptools python3-wheel
+# For compatibility, create symlinks
+sudo ln -sf /usr/bin/python3.12 /usr/bin/python3
+sudo ln -sf /usr/bin/python3.12 /usr/bin/python
 ```
 
 ### 2. Ollama Installation
@@ -165,7 +166,23 @@ source venv/bin/activate
 
 #### Step 3: Install Python Dependencies
 ```bash
+# Install modern LangChain dependencies
 pip install -r requirements.txt
+```
+
+**Python 3.12 Specific Notes:**
+- All dependencies have been tested and verified for Python 3.12 compatibility
+- Updated LangChain packages include: `langchain-community`, `langchain-openai`, `langchain-anthropic`, `langchain-chroma`, `langchain-huggingface`
+- Modern LCEL (LangChain Expression Language) patterns for better performance
+- Improved async support and error handling
+
+**If you encounter import errors:**
+```bash
+# Force reinstall with Python 3.12 wheels
+pip install --upgrade --force-reinstall -r requirements.txt
+
+# For development installations
+pip install -e .
 ```
 
 #### Step 4: Download AI Model

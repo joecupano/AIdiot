@@ -1,94 +1,126 @@
 # AIdiot - AI Assistant
 
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.9%2B%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
+[![LangChain](https://img.shields.io/badge/LangChain-v0.1%2B-green.svg)](https://python.langchain.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
 [![LLM](https://img.shields.io/badge/LLM-Multi--Backend-blue.svg)](https://github.com/joecupano/AIdiot)
 
-A standalone AI solution for technical design and analysis using RAG (Retrieval-Augmented Generation). Process PDF files, image-based PDFs, technical diagrams, and web content to provide intelligent assistance for technical projects.
+A standalone AI solution for technical design and analysis using modern RAG (Retrieval-Augmented Generation) architecture. Process PDF files, image-based PDFs, technical diagrams, and web content with **Python 3.12 support** and **modern LangChain v0.1+ integration**.
 
-![AIdiot Demo](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=AIdiot+AI+Assistant+Demo)
+![AIdiot Demo](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=AIdiot+AI+Assistant+%7C+Python+3.12+%7C+LangChain+v0.1%2B)
+
+## 🆕 **What's New**
+- ✅ **Python 3.12 Support** - Fully tested and optimized
+- ✅ **Modern LangChain** - Uses v0.1+ with LCEL (LangChain Expression Language)
+- ✅ **Modular Packages** - `langchain-community`, `langchain-openai`, `langchain-anthropic`
+- ✅ **Enhanced Performance** - Improved RAG chains and async support
+- ✅ **Better Error Handling** - Robust fallback mechanisms
 
 ## 🚀 Quick Start
 
-### Windows
+### Windows (Python 3.12)
 ```powershell
+# Clone repository
 git clone https://github.com/yourusername/aidiot.git
 cd aidiot
+
+# Automated setup with Python 3.12 support
 .\setup.ps1
+
+# Start using the AI assistant
 python main.py interactive
 ```
 
-### Linux/Ubuntu
+### Linux/Ubuntu (Python 3.12)
 ```bash
+# Clone repository  
 git clone https://github.com/yourusername/aidiot.git
 cd aidiot
+
+# Automated setup with modern dependencies
 chmod +x setup.sh
 ./setup.sh
+
+# Start using the AI assistant
 python main.py interactive
 ```
 
-### 🔧 Backend Configuration
+### 🔧 Modern Backend Configuration
 ```bash
-# Default: Local Ollama (privacy-focused)
+# Default: Local Ollama with modern LangChain integration
 export LLM_BACKEND=ollama
+export OLLAMA_MODEL=mistral:7b
 
-# Alternative: OpenAI (performance-focused)
+# OpenAI with langchain-openai package
 export LLM_BACKEND=openai
 export OPENAI_API_KEY=your_key_here
+export OPENAI_MODEL=gpt-4-turbo
 
-# Quick setup with all options
+# Anthropic with langchain-anthropic package  
+export LLM_BACKEND=anthropic
+export ANTHROPIC_API_KEY=your_key_here
+export ANTHROPIC_MODEL=claude-3-sonnet-20240229
+
+# Quick multi-backend setup
 python setup_backends.py
 ```
 
 ## ✨ Features
 
-- 🔧 **Multi-format Processing**: PDFs, images, web content
-- 🤖 **Multi-Backend AI**: Local (Ollama, LocalAI) or Cloud (OpenAI, Anthropic) options
-- 🖼️ **OCR Technology**: Extract text from technical diagrams
-- 🌐 **Dual Interface**: Command-line and REST API
-- 📊 **RAG Architecture**: Accurate, source-attributed answers
-- 🔄 **Cross-Platform**: Windows, Linux, macOS support
+- 🔧 **Multi-format Processing**: PDFs, images, web content with enhanced OCR
+- 🤖 **Modern Multi-Backend AI**: Updated integrations for all LLM providers
+- 🖼️ **Advanced OCR**: Extract text and component values from technical diagrams  
+- 🌐 **Dual Interface**: Enhanced CLI and REST API with Python 3.12 performance
+- 📊 **Modern RAG Architecture**: LCEL-based chains for better performance
+- 🔄 **Cross-Platform**: Full Python 3.12 support on Windows, Linux, macOS
+- ⚡ **Enhanced Performance**: Async improvements and better error handling
 
 ## 📖 Documentation
 
-- [Installation Guide](INSTALL.md) - Complete setup instructions
-- [Usage Examples](EXAMPLES.md) - Practical usage patterns
-- [Backend Configuration](BACKEND_CONFIG.md) - Multi-backend LLM setup
-- [AI Model Alternatives](AI_MODEL_ALTERNATIVES.md) - Compare different AI models
-- [Cross-Platform Guide](CROSS-PLATFORM.md) - Platform-specific info
+- [Installation Guide](INSTALL.md) - Python 3.12 setup instructions
+- [Usage Examples](EXAMPLES.md) - Updated usage patterns and API examples
+- [Backend Configuration](BACKEND_CONFIG.md) - Modern LangChain backend setup
+- [AI Model Alternatives](AI_MODEL_ALTERNATIVES.md) - 2024 model comparison with LangChain integration
+- [Cross-Platform Guide](CROSS-PLATFORM.md) - Python 3.12 platform-specific info
+- [LangChain Migration](LANGCHAIN_MIGRATION.md) - Technical details of the modernization
 - [API Documentation](http://localhost:8000/docs) - Interactive API docs (when server running)
 
 ## 🛠️ Requirements
 
-- Python 3.8+
-- 8GB RAM (16GB recommended)
-- 10GB free disk space
-- [Ollama](https://ollama.ai) for AI model
+- **Python 3.9-3.12** (3.12 recommended and fully supported)
+- **8GB RAM** (16GB recommended)
+- **10GB free disk space**
+- **[Ollama](https://ollama.ai)** for local AI models (recommended)
+- **Modern LangChain packages** (installed automatically)
 
-## 📊 Usage Examples
+## 📊 Updated Usage Examples
 
 ```bash
-# Add technical documents
+# System setup with modern dependencies
+python main.py setup
+
+# Add technical documents with enhanced processing
 python main.py add-documents ./technical_manuals/
 
-# Ask questions
+# Ask questions with improved RAG system
 python main.py query "How do I calculate component values for this design?"
 
-# Start web server
-python main.py serve
+# Start web server with Python 3.12 performance
+python main.py serve --port 8000
 ```
 
-## 🏗️ Architecture
+## 🏗️ Modern Architecture
 
 ```
-AIdiot/
-├── 📄 PDF Processing      → Extract text and metadata
-├── 🖼️ Image OCR           → Technical diagram analysis  
-├── 🌐 Web Scraping        → Online content integration
-├── 🧠 RAG System          → Intelligent Q&A with sources
-├── 💻 CLI Interface       → Interactive command-line tool
-└── 🚀 REST API           → Web application integration
+AIdiot (Python 3.12 + LangChain v0.1+)/
+├── 📄 Enhanced PDF Processing    → Improved text extraction
+├── 🖼️ Advanced Image OCR         → Better technical diagram analysis  
+├── 🌐 Smart Web Scraping         → Enhanced content integration
+├── 🧠 Modern RAG System          → LCEL-based chains for performance
+├── 💻 Updated CLI Interface      → Python 3.12 optimized
+├── 🚀 Enhanced REST API          → Async improvements
+└── 🔧 Multi-Backend LLM Support  → Modular LangChain packages
 ```
 
 ## 🤝 Contributing

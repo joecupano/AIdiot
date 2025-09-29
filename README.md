@@ -14,11 +14,11 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
 🧠 **AI-Powered Analysis:**
 - **Multi-Backend LLM Support**: Choose from local (Ollama, LocalAI) or cloud (OpenAI, Anthropic) models
 - **Automatic Fallback**: Seamlessly switches between primary and backup LLM services
-- **RAG Architecture**: Combines retrieval with generation for accurate, contextual answers
+- **Modern RAG Architecture**: Built with LangChain v0.1+ using LCEL (LangChain Expression Language)
 - **Technical Focus**: Specialized prompts for technical design and analysis (configurable)
 - **Source Attribution**: Shows which documents contributed to each answer
 
-� **Technical Specialization (Configurable):**
+🔧 **Technical Specialization (Configurable):**
 - Circuit design and analysis
 - Component calculations and filter design
 - Technical calculations and theory
@@ -26,13 +26,16 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
 - Standards, regulations, and best practices
 - Specialized techniques and methodologies
 
+## Requirements
+
+- **Python 3.9-3.12** - [Download from python.org](https://python.org)
+- **Ollama** (for local LLM) - [Install from ollama.ai](https://ollama.ai)
+- **Tesseract OCR** (optional) - [Download for Windows](https://github.com/UB-Mannheim/tesseract/wiki)
+
+### Python 3.12 Support ✅
+This application has been fully tested and optimized for Python 3.12, including updated LangChain dependencies and modern async patterns.
+
 ## Quick Start
-
-### Prerequisites
-
-1. **Python 3.8+** - [Download from python.org](https://python.org)
-2. **Ollama** - [Install from ollama.ai](https://ollama.ai)
-3. **Tesseract OCR** (optional) - [Download for Windows](https://github.com/UB-Mannheim/tesseract/wiki)
 
 ### Installation
 
@@ -42,19 +45,26 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
    cd AIdiot
    ```
 
-2. **Run setup script (Windows PowerShell):**
+2. **Run setup script:**
    ```powershell
+   # Windows PowerShell
    .\setup.ps1
+   ```
+   ```bash
+   # Linux/Mac
+   ./setup.sh
    ```
 
 3. **Or install manually:**
    ```bash
-   # Create virtual environment
+   # Create virtual environment (recommended)
    python -m venv venv
-   venv\Scripts\activate  # Windows
-   # source venv/bin/activate  # Linux/Mac
    
-   # Install dependencies
+   # Activate virtual environment
+   venv\Scripts\activate     # Windows
+   source venv/bin/activate  # Linux/Mac
+   
+   # Install dependencies (includes modern LangChain packages)
    pip install -r requirements.txt
    
    # Install and start Ollama
@@ -63,6 +73,15 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
    # Initialize system
    python main.py setup
    ```
+
+### LangChain Modernization 🆕
+This version uses the latest LangChain architecture with:
+- Modular package imports (`langchain-community`, `langchain-openai`, etc.)
+- LangChain Expression Language (LCEL) for efficient chains
+- Modern retrieval patterns with better performance
+- Full Python 3.12 compatibility
+
+See [LANGCHAIN_MIGRATION.md](LANGCHAIN_MIGRATION.md) for technical details.
 
 ### Backend Configuration
 

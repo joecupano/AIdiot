@@ -1,6 +1,14 @@
-# Multi-Backend LLM Configuration Examples
+# Multi-Backend LLM Configuration Guide
 
-This guide shows how to configure the AI Assistant to use different LLM backends instead of the default Ollama setup.
+This guide shows how to configure the AI Assistant to use different LLM backends with the modern LangChain architecture.
+
+## 🆕 LangChain v0.1+ Integration
+
+This version uses the latest LangChain architecture with:
+- Modular backend packages (`langchain-community`, `langchain-openai`, `langchain-anthropic`)
+- LangChain Expression Language (LCEL) for efficient chains
+- Improved error handling and fallback mechanisms
+- Full Python 3.12 compatibility
 
 ## Configuration Methods
 
@@ -9,15 +17,20 @@ This guide shows how to configure the AI Assistant to use different LLM backends
 The easiest way to switch backends is using environment variables:
 
 ```bash
-# Use OpenAI GPT
+# Use OpenAI GPT (with langchain-openai)
 export LLM_BACKEND=openai
 export OPENAI_API_KEY=your_api_key_here
 export OPENAI_MODEL=gpt-4
 
-# Use Anthropic Claude
+# Use Anthropic Claude (with langchain-anthropic)
 export LLM_BACKEND=anthropic
 export ANTHROPIC_API_KEY=your_api_key_here
 export ANTHROPIC_MODEL=claude-3-sonnet-20240229
+
+# Use Ollama (with langchain-community)
+export LLM_BACKEND=ollama
+export OLLAMA_MODEL=mistral:7b
+export OLLAMA_BASE_URL=http://localhost:11434
 
 # Use text-generation-webui
 export LLM_BACKEND=textgen
@@ -49,54 +62,105 @@ OLLAMA_TEMPERATURE=0.1
 
 ## Backend-Specific Setup Instructions
 
-### OpenAI Setup
+### OpenAI Setup (langchain-openai)
 
-1. Get API key from [OpenAI Platform](https://platform.openai.com/)
-2. Set environment variables:
+1. **Install the package:**
+```bash
+pip install langchain-openai>=0.0.6
+```
+
+2. **Get API key from [OpenAI Platform](https://platform.openai.com/)**
+
+3. **Set environment variables:**
 ```bash
 export LLM_BACKEND=openai
 export OPENAI_API_KEY=your_key_here
-export OPENAI_MODEL=gpt-3.5-turbo  # or gpt-4
+export OPENAI_MODEL=gpt-3.5-turbo  # or gpt-4, gpt-4-turbo
 ```
 
-3. Install dependencies:
+### Anthropic Claude Setup (langchain-anthropic)
+
+1. **Install the package:**
 ```bash
-pip install openai
+pip install langchain-anthropic>=0.1.4
 ```
 
-### Anthropic Claude Setup
+2. **Get API key from [Anthropic Console](https://console.anthropic.com/)**
 
-1. Get API key from [Anthropic Console](https://console.anthropic.com/)
-2. Set environment variables:
+3. **Set environment variables:**
 ```bash
 export LLM_BACKEND=anthropic
 export ANTHROPIC_API_KEY=your_key_here
-export ANTHROPIC_MODEL=claude-3-haiku-20240307
+export ANTHROPIC_MODEL=claude-3-haiku-20240307  # or claude-3-sonnet-20240229
 ```
 
-3. Install dependencies:
+### Ollama Setup (langchain-community)
+
+1. **Install Ollama:**
+   - Visit [ollama.ai](https://ollama.ai) for installation
+   - Or use the automatic setup scripts
+
+2. **Install the package:**
 ```bash
-pip install anthropic
+pip install langchain-community>=0.0.25
+```
+
+3. **Download a model:**
+```bash
+ollama pull mistral:7b
+# or other models: llama2:7b, codellama:7b, etc.
+```
+
+4. **Configure:**
+```bash
+export LLM_BACKEND=ollama
+export OLLAMA_MODEL=mistral:7b
+export OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 ### text-generation-webui Setup
 
-1. Install text-generation-webui:
+1. **Install text-generation-webui:**
 ```bash
 git clone https://github.com/oobabooga/text-generation-webui.git
 cd text-generation-webui
 pip install -r requirements.txt
 ```
 
-2. Start the server:
+2. **Start the server:**
 ```bash
 python server.py --api --listen
 ```
 
-3. Configure the AI Assistant:
+3. **Configure the AI Assistant:**
 ```bash
 export LLM_BACKEND=textgen
 export TEXTGEN_BASE_URL=http://localhost:5000
+```
+
+### LocalAI Setup
+
+1. **Install LocalAI using Docker:**
+```bash
+docker run -p 8080:8080 --name local-ai -ti localai/localai:latest
+```
+
+2. **Configure:**
+```bash
+export LLM_BACKEND=localai
+export LOCALAI_BASE_URL=http://localhost:8080
+export LOCALAI_MODEL=gpt-3.5-turbo  # or your model name
+```
+
+### Compatible with LM Studio
+
+For LM Studio users, you can use the OpenAI compatibility:
+
+```bash
+export LLM_BACKEND=openai
+export OPENAI_API_KEY=not-needed
+export OPENAI_BASE_URL=http://localhost:1234/v1
+export OPENAI_MODEL=your-model-name
 ```
 
 ### LocalAI Setup

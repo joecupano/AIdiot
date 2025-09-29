@@ -5,19 +5,19 @@ from abc import ABC, abstractmethod
 
 # Import various LLM libraries conditionally
 try:
-    from langchain.llms import Ollama
+    from langchain_community.llms import Ollama
     OLLAMA_AVAILABLE = True
 except ImportError:
     OLLAMA_AVAILABLE = False
 
 try:
-    from langchain.chat_models import ChatOpenAI
+    from langchain_openai import ChatOpenAI
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
 
 try:
-    from langchain.chat_models import ChatAnthropic
+    from langchain_anthropic import ChatAnthropic
     ANTHROPIC_AVAILABLE = True
 except ImportError:
     ANTHROPIC_AVAILABLE = False
@@ -89,7 +89,7 @@ class OpenAIBackend(LLMBackend):
     
     def query(self, prompt: str, **kwargs) -> str:
         try:
-            from langchain.schema import HumanMessage
+            from langchain_core.messages import HumanMessage
             messages = [HumanMessage(content=prompt)]
             response = self.llm(messages)
             return response.content
@@ -122,7 +122,7 @@ class AnthropicBackend(LLMBackend):
     
     def query(self, prompt: str, **kwargs) -> str:
         try:
-            from langchain.schema import HumanMessage
+            from langchain_core.messages import HumanMessage
             messages = [HumanMessage(content=prompt)]
             response = self.llm(messages)
             return response.content

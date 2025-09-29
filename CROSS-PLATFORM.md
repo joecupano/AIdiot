@@ -1,156 +1,249 @@
 # Cross-Platform Compatibility Guide
 
-AIdiot AI Assistant is fully cross-platform and runs natively on Windows 11, Ubuntu 24.04, and other operating systems.
+AIdiot AI Assistant is fully cross-platform with Python 3.12 support and modern LangChain architecture.
 
 ## ✅ **Confirmed Compatibility**
 
-### Operating Systems
-- **Windows 10/11** - Full native support
-- **Ubuntu 20.04/22.04/24.04** - Full native support  
+### Operating Systems & Python Versions
+- **Windows 10/11** - Full native support with Python 3.9-3.12
+- **Ubuntu 20.04/22.04/24.04** - Full native support with Python 3.9-3.12
 - **Other Linux distributions** - Debian-based recommended
-- **macOS** - Intel and Apple Silicon support
+- **macOS** - Intel and Apple Silicon support with Python 3.9-3.12
+
+### Python 3.12 Specific Support ✨
+- **LangChain v0.1+**: Full compatibility with modular packages
+- **Modern Dependencies**: All packages tested with Python 3.12
+- **Async Improvements**: Better async/await support across platforms
+- **Performance**: Enhanced performance with Python 3.12 optimizations
 
 ### Installation Methods
 
-| Platform | Setup Method | Command | Backend Setup |
-|----------|-------------|---------|---------------|
-| **Windows 11** | PowerShell Script | `.\setup.ps1` | `python setup_backends.py` |
-| **Ubuntu 24.04** | Bash Script | `./setup.sh` | `python setup_backends.py` |
-| **macOS** | Manual/Homebrew | See INSTALL.md | `python setup_backends.py` |
-| **Other Linux** | Manual | See INSTALL.md | `python setup_backends.py` |
+| Platform | Python 3.12 Setup | Command | Backend Setup |
+|----------|-------------------|---------|---------------|
+| **Windows 11** | `python --version` | `.\setup.ps1` | `python setup_backends.py` |
+| **Ubuntu 24.04** | `python3.12 --version` | `./setup.sh` | `python setup_backends.py` |
+| **macOS** | `brew install python@3.12` | See INSTALL.md | `python setup_backends.py` |
+| **Other Linux** | Package manager | See INSTALL.md | `python setup_backends.py` |
 
 ## 🔧 **Platform-Specific Features**
 
-### File Paths
+### Modern LangChain Integration
+- **Modular Packages**: `langchain-community`, `langchain-openai`, `langchain-anthropic`
+- **LCEL Chains**: LangChain Expression Language works on all platforms
+- **Backend Flexibility**: Easy switching between local and cloud LLMs
+- **Error Handling**: Improved cross-platform error handling and fallbacks
+
+### File Paths & Configuration
 - **Automatic Detection**: Uses `pathlib` for cross-platform path handling
 - **Tesseract OCR**: Auto-detects installation path on all platforms
 - **Data Directories**: Consistent structure across platforms
+- **Environment Variables**: `.env` file support for easy configuration
 
-### LLM Backend Support
+### LLM Backend Support by Platform
 - **Local Backends**: Ollama, LocalAI, text-generation-webui (all platforms)
 - **Cloud Backends**: OpenAI, Anthropic (platform-agnostic APIs)
+- **Docker Support**: LocalAI and custom backends via Docker
 - **Auto-Configuration**: Platform-specific setup scripts handle dependencies
-
-### Dependencies
-All core dependencies are cross-platform:
-- **Python 3.8+**: Available on all platforms
-- **Ollama**: Native installers for Windows, Linux, macOS
-- **LangChain**: Pure Python, platform-agnostic
-- **ChromaDB**: Cross-platform vector database
-- **FastAPI**: Web framework works everywhere
 
 ### Command Examples
 
-#### Windows 11
+#### Windows 11 with Python 3.12
 ```powershell
-# Setup
+# Check Python version
+python --version  # Should show 3.12.x
+
+# Setup with modern LangChain
 .\setup.ps1
 
 # Virtual environment
 python -m venv venv
 venv\Scripts\activate
 
-# Run application
+# Install modern LangChain packages
+pip install -r requirements.txt
+
+# Run with updated architecture
 python main.py setup
 python main.py interactive
 python main.py serve
 ```
 
-#### Ubuntu 24.04
+#### Ubuntu 24.04 with Python 3.12
 ```bash
-# Setup
+# Install Python 3.12 if needed
+sudo apt update
+sudo apt install python3.12 python3.12-pip python3.12-venv
+
+# Setup with modern dependencies
 chmod +x setup.sh
 ./setup.sh
 
-# Virtual environment
-python3 -m venv venv
+# Virtual environment with Python 3.12
+python3.12 -m venv venv
 source venv/bin/activate
 
 # Run application
 python main.py setup
-python main.py interactive
+python main.py interactive  
 python main.py serve
+```
+
+#### macOS with Python 3.12
+```bash
+# Install Python 3.12 via Homebrew
+brew install python@3.12
+
+# Create virtual environment
+python3.12 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python main.py setup
 ```
 
 ## 📋 **Installation Checklist**
 
-### Windows 11
-- [ ] Python 3.8+ installed
+### Windows 11 + Python 3.12
+- [ ] Python 3.12 installed from python.org
 - [ ] PowerShell execution policy allows scripts
 - [ ] Ollama downloaded and installed
-- [ ] Tesseract OCR (optional)
-- [ ] Run `.\setup.ps1`
+- [ ] Tesseract OCR (optional for diagram processing)
+- [ ] Run `.\setup.ps1` for automatic setup
+- [ ] Verify: `python -c "import langchain_community; print('OK')"`
 
-### Ubuntu 24.04
+### Ubuntu 24.04 + Python 3.12
 - [ ] System packages updated (`sudo apt update`)
-- [ ] Python 3.8+ and pip installed
+- [ ] Python 3.12 and pip installed
 - [ ] Build tools installed (`build-essential`)
 - [ ] Ollama installed via script
 - [ ] Tesseract OCR (optional)
-- [ ] Run `./setup.sh`
+- [ ] Run `./setup.sh` for automatic setup
+- [ ] Verify: `python -c "import langchain_community; print('OK')"`
+
+### macOS + Python 3.12
+- [ ] Homebrew installed
+- [ ] Python 3.12 via Homebrew
+- [ ] Xcode command line tools
+- [ ] Ollama for macOS installed
+- [ ] Tesseract via Homebrew (optional)
+- [ ] Manual setup following INSTALL.md
 
 ## 🐛 **Platform-Specific Troubleshooting**
 
-### Windows 11 Issues
+### Windows 11 + Python 3.12 Issues
 ```powershell
 # PowerShell execution policy
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Path issues
+# Python 3.12 path issues
 where python
+python --version
+
+# LangChain import issues
+pip install --upgrade --force-reinstall langchain-community
+pip install --upgrade --force-reinstall langchain-core
 where ollama
 
-# Virtual environment issues
+# Virtual environment issues with Python 3.12
 Remove-Item -Recurse -Force venv
 python -m venv venv
+venv\Scripts\activate
+pip install --upgrade pip setuptools wheel
+
+# LangChain compatibility issues
+pip install --upgrade langchain>=0.1.0
+pip install --upgrade langchain-community>=0.0.25
 ```
 
-### Ubuntu 24.04 Issues
+### Ubuntu 24.04 + Python 3.12 Issues
 ```bash
-# Missing packages
+# Missing Python 3.12 packages
 sudo apt update
-sudo apt install python3-dev build-essential curl
+sudo apt install python3.12-dev python3.12-venv build-essential curl
+
+# Install specific Python 3.12 packages
+sudo apt install python3.12-distutils python3.12-lib2to3
 
 # Permission issues
 chmod +x setup.sh
 sudo chown -R $USER:$USER ./
 
-# Python path issues
-which python3
+# Python 3.12 path issues
+which python3.12
+python3.12 --version
 which pip3
+
+# LangChain import errors with Python 3.12
+python3.12 -m pip install --upgrade pip
+python3.12 -m pip install --force-reinstall langchain-community
 ```
 
-### Common Cross-Platform Issues
+### macOS + Python 3.12 Issues
 ```bash
-# Ollama not found
-# Windows: Reinstall from ollama.ai
-# Linux: curl -fsSL https://ollama.ai/install.sh | sh
+# Homebrew Python 3.12 issues
+brew update
+brew install python@3.12
+brew link --force python@3.12
 
-# Virtual environment activation
-# Windows: venv\Scripts\activate
-# Linux/Mac: source venv/bin/activate
+# Path issues
+export PATH="/opt/homebrew/bin:$PATH"  # Apple Silicon
+export PATH="/usr/local/bin:$PATH"     # Intel Mac
+
+# LangChain compilation issues
+xcode-select --install
+pip install --upgrade setuptools wheel
+```
+
+### Common Cross-Platform Issues (Python 3.12)
+```bash
+# Modern Ollama installation
+# Windows: Download latest from ollama.ai
+# Linux: curl -fsSL https://ollama.ai/install.sh | sh
+# macOS: brew install ollama
+
+# Virtual environment with Python 3.12
+# Windows: python -m venv venv && venv\Scripts\activate
+# Linux/Mac: python3.12 -m venv venv && source venv/bin/activate
 
 # Port conflicts (API server)
 # Change port in .env file: API_PORT=8001
+# Or: python main.py serve --port 8001
+
+# LangChain module resolution
+python -c "import sys; print(sys.path)"
+pip list | grep langchain
 ```
 
-## 🚀 **Performance Comparison**
+## 🚀 **Performance Comparison (Python 3.12)**
 
-| Aspect | Windows 11 | Ubuntu 24.04 | Notes |
-|--------|-----------|--------------|-------|
-| **Installation** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Both excellent |
-| **Performance** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Linux slight edge |
-| **Memory Usage** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Linux more efficient |
-| **Compatibility** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Equal support |
-| **Ease of Setup** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Windows script polished |
+| Aspect | Windows 11 | Ubuntu 24.04 | macOS | Notes |
+|--------|-----------|--------------|-------|-------|
+| **Installation** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Scripts handle complexity |
+| **Python 3.12 Performance** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Linux/Mac native advantage |
+| **LangChain Performance** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | LCEL chains optimized |
+| **Memory Usage** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Unix systems more efficient |
+| **Ollama Integration** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Equal support |
+| **Development Experience** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Windows tooling improved |
 
 ## 🔄 **Migration Between Platforms**
 
-### Data Portability
-Your AIdiot data is fully portable between platforms:
+### Data Portability with Modern Stack
+Your AIdiot data is fully portable between platforms with the updated architecture:
 
 ```bash
-# Backup your data (works on both platforms)
+# Backup your data (Python 3.12 compatible)
+python main.py export --format json --output ./backup/
+# Or: tar -czf aidiot-backup.tar.gz data/ .env
+
+# Restore on new platform
+python main.py import --source ./backup/
+# Or: tar -xzf aidiot-backup.tar.gz
+
+# Verify modern LangChain compatibility
+python main.py health --verbose
 tar -czf aidiot-backup.tar.gz data/
 
 # Restore on new platform

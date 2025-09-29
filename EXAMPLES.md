@@ -1,19 +1,17 @@
 # AIdiot Usage Examples
 
-# Examples
+Practical examples of using the AI Assistant with the modern LangChain architecture and Python 3.12.
 
-This file contains practical examples of how to use the AI Assistant for technical domains.
-
-## 1. Basic Setup and First Use
+## 🚀 **Getting Started**
 
 ```bash
-# Initial setup
+# Initial setup with Python 3.12
 python main.py setup
 
 # Add your first document (PDF manual)
 python main.py add-documents "ARRL_Antenna_Book.pdf"
 
-# Ask your first question
+# Ask your first question  
 python main.py query "What is the formula for dipole antenna length?"
 
 # Check system status
@@ -21,28 +19,48 @@ python main.py health
 python main.py stats
 ```
 
-## 2. Building a Knowledge Base
+## 📚 **Building a Knowledge Base**
+
+### Adding Various Document Types
 
 ```bash
 # Add multiple PDFs from a directory
 python main.py add-documents ./rf_manuals/
 
-# Add schematic diagrams
+# Add schematic diagrams (with OCR processing)
 python main.py add-documents filter_schematic.png
 python main.py add-documents amplifier_circuit.jpg
 
 # Add web content
 python main.py add-documents --url https://www.arrl.org/antenna-basics
 python main.py add-documents --url https://ham.stackexchange.com/questions/tagged/antenna-design
+
+# Batch processing with multiple URLs
+python main.py add-documents \
+    --url https://www.electronics-tutorials.ws/filter/filter_2.html \
+    --url https://www.allaboutcircuits.com/textbook/alternating-current/chpt-8/
 ```
 
-## 3. Interactive Mode Examples
+### Advanced Document Processing
 
 ```bash
-# Start interactive mode
+# Process directory with specific file types
+python main.py add-documents ./documents/ --filter "*.pdf,*.png,*.jpg"
+
+# Add documents with custom metadata
+python main.py add-documents technical_manual.pdf --metadata '{"category": "manual", "domain": "rf"}'
+
+# Process with specific OCR settings for technical diagrams
+python main.py add-documents circuit_diagram.png --ocr-mode advanced
+```
+
+## 💬 **Interactive Mode Examples**
+
+```bash
+# Start interactive mode with modern LangChain backend
 python main.py interactive
 
-# Example conversation:
+# Example conversation with updated RAG system:
 📡 Your question: How do I calculate the resonant frequency of an LC circuit?
 
 🤖 Answer: The resonant frequency of an LC circuit is calculated using the formula:
@@ -51,7 +69,7 @@ f = 1 / (2π√(LC))
 
 Where:
 - f = resonant frequency in Hz
-- L = inductance in henries (H)
+- L = inductance in henries (H)  
 - C = capacitance in farads (F)
 
 For example, with L = 10µH and C = 100pF:
@@ -59,7 +77,7 @@ f = 1 / (2π√(10×10⁻⁶ × 100×10⁻¹²))
 f = 1 / (2π√(10⁻¹⁵))
 f ≈ 15.92 MHz
 
-📚 Sources: RF_Handbook.pdf, LC_Circuits.pdf
+📚 Sources: RF_Handbook.pdf (p.45), LC_Circuits.pdf (p.12)
 
 📡 Your question: What's the bandwidth of this circuit?
 
@@ -74,22 +92,47 @@ BW = 15.92 MHz / 100 = 159.2 kHz
 
 The 3dB bandwidth extends from f₀ - BW/2 to f₀ + BW/2.
 
-📡 Your question: stats
+📡 Your question: /stats
 
 📊 Knowledge Base Stats: {
   "total_documents": 157,
+  "document_chunks": 1847,
   "document_types": {
     "pdf": 89,
-    "web": 45,
-    "schematic": 23
+    "web": 45, 
+    "images": 23
   },
-  "unique_sources": 34
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "vector_store": "chromadb",
+  "llm_backend": "ollama:mistral:7b"
 }
+
+📡 Your question: /help
+
+Available commands:
+- /stats - Show knowledge base statistics
+- /health - Check system health
+- /switch-backend openai - Switch to different LLM backend
+- /clear - Clear conversation history
+- /exit - Exit interactive mode
 ```
 
-## 4. Web API Examples
+## 🌐 **Web API Examples**
 
-### Python Client
+### Starting the API Server
+
+```bash
+# Start with default settings (Python 3.12 compatible)
+python main.py serve
+
+# Start with custom configuration
+python main.py serve --host 0.0.0.0 --port 8080 --reload
+
+# Start with specific backend
+LLM_BACKEND=openai python main.py serve
+```
+
+### Python Client Examples
 
 ```python
 import requests
@@ -104,57 +147,168 @@ base_url = "http://localhost:8000"
 # 1. Ask a question
 def ask_question(question):
     response = requests.post(f"{base_url}/query", json={
+# Query the API
+def ask_question(question):
+    response = requests.post(f"{base_url}/query", json={
         "question": question,
-        "include_sources": True
+        "include_sources": True,
+        "backend": "auto"  # Let system choose best backend
     })
     return response.json()
 
-# Example questions
+# Example questions with modern backend support
 answer = ask_question("How do I design a Yagi antenna for 2 meters?")
 print(f"Answer: {answer['answer']}")
 print(f"Sources: {len(answer['sources'])} documents")
+print(f"Backend used: {answer.get('backend_used', 'default')}")
 
-# 2. Upload a document
-def upload_document(file_path):
+# Upload documents with metadata
+def upload_document(file_path, metadata=None):
     with open(file_path, 'rb') as f:
+        files = {"file": f}
+        data = {"metadata": json.dumps(metadata)} if metadata else {}
         response = requests.post(f"{base_url}/documents/upload", 
-                               files={"file": f})
+                               files=files, data=data)
     return response.json()
 
-result = upload_document("antenna_manual.pdf")
+result = upload_document("antenna_manual.pdf", {
+    "category": "antenna", 
+    "difficulty": "intermediate",
+    "tags": ["yagi", "2m", "vhf"]
+})
 print(f"Upload result: {result['message']}")
 
-# 3. Add URL content
-def add_url(url):
-    response = requests.post(f"{base_url}/documents/url", json={"url": url})
+# Add URL content with processing options  
+def add_url(url, options=None):
+    payload = {"url": url}
+    if options:
+        payload.update(options)
+    response = requests.post(f"{base_url}/documents/url", json=payload)
     return response.json()
 
-result = add_url("https://www.arrl.org/impedance-matching")
+result = add_url("https://www.arrl.org/impedance-matching", {
+    "extract_images": True,
+    "follow_links": False,
+    "max_depth": 1
+})
 print(f"URL processing: {result['message']}")
 
-# 4. Get statistics
+# Get enhanced statistics
 def get_stats():
     response = requests.get(f"{base_url}/stats")
     return response.json()
 
 stats = get_stats()
 print(f"Total documents: {stats['total_documents']}")
+print(f"Total chunks: {stats['document_chunks']}")
 print(f"Document types: {stats['document_types']}")
+print(f"Embedding model: {stats['embedding_model']}")
+print(f"Current LLM backend: {stats['llm_backend']}")
 
-# 5. Health check
+# Enhanced health check
 def health_check():
     response = requests.get(f"{base_url}/health")
     return response.json()
 
 health = health_check()
 print(f"System healthy: {health['overall_healthy']}")
+print(f"Components: {health['components']}")
+print(f"Backend status: {health['backend_status']}")
+
+# Backend switching
+def switch_backend(backend_name, config=None):
+    payload = {"backend": backend_name}
+    if config:
+        payload["config"] = config
+    response = requests.post(f"{base_url}/backend/switch", json=payload)
+    return response.json()
+
+# Switch to OpenAI for complex queries
+result = switch_backend("openai", {
+    "model": "gpt-4-turbo",
+    "temperature": 0.1
+})
+print(f"Backend switch: {result['message']}")
 ```
 
-### JavaScript/HTML Client
+### Modern JavaScript/TypeScript Client
+
+```typescript
+// Modern TypeScript client with async/await
+interface QueryRequest {
+    question: string;
+    include_sources?: boolean;
+    backend?: string;
+    max_tokens?: number;
+}
+
+interface QueryResponse {
+    answer: string;
+    sources: Array<{
+        content: string;
+        metadata: Record<string, any>;
+    }>;
+    backend_used?: string;
+    processing_time?: number;
+}
+
+class AIdiotClient {
+    constructor(private baseUrl: string = 'http://localhost:8000') {}
+
+    async query(request: QueryRequest): Promise<QueryResponse> {
+        const response = await fetch(`${this.baseUrl}/query`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request)
+        });
+        return response.json();
+    }
+
+    async uploadDocument(file: File, metadata?: Record<string, any>) {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (metadata) {
+            formData.append('metadata', JSON.stringify(metadata));
+        }
+        
+        const response = await fetch(`${this.baseUrl}/documents/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        return response.json();
+    }
+
+    async getStats() {
+        const response = await fetch(`${this.baseUrl}/stats`);
+        return response.json();
+    }
+}
+
+// Usage example
+const client = new AIdiotClient();
+
+(async () => {
+    try {
+        const result = await client.query({
+            question: "Explain impedance matching in antenna systems",
+            include_sources: true,
+            backend: "auto"
+        });
+        
+        console.log(`Answer: ${result.answer}`);
+        console.log(`Sources: ${result.sources.length}`);
+        console.log(`Backend: ${result.backend_used}`);
+    } catch (error) {
+        console.error('Query failed:', error);
+    }
+})();
+```
+
+### HTML Web Interface
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>AIdiot Web Interface</title>
     <style>

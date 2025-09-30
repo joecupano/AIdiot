@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 # Import various LLM libraries conditionally
 try:
-    from langchain_community.llms import Ollama
+    from langchain_ollama import OllamaLLM
     OLLAMA_AVAILABLE = True
 except ImportError:
     OLLAMA_AVAILABLE = False
@@ -46,9 +46,9 @@ class OllamaBackend(LLMBackend):
     
     def __init__(self, model: str = "mistral:7b", base_url: str = "http://localhost:11434", **kwargs):
         if not OLLAMA_AVAILABLE:
-            raise ImportError("Ollama not available. Install with: pip install langchain")
+            raise ImportError("Ollama not available. Install with: pip install langchain-ollama")
         
-        self.llm = Ollama(
+        self.llm = OllamaLLM(
             model=model,
             base_url=base_url,
             temperature=kwargs.get('temperature', 0.1)

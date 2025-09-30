@@ -94,7 +94,7 @@ export ANTHROPIC_API_KEY=your_key_here
 export ANTHROPIC_MODEL=claude-3-haiku-20240307  # or claude-3-sonnet-20240229
 ```
 
-### Ollama Setup (langchain-community)
+### Ollama Setup (langchain-ollama)
 
 1. **Install Ollama:**
    - Visit [ollama.ai](https://ollama.ai) for installation
@@ -102,7 +102,7 @@ export ANTHROPIC_MODEL=claude-3-haiku-20240307  # or claude-3-sonnet-20240229
 
 2. **Install the package:**
 ```bash
-pip install langchain-community>=0.0.25
+pip install langchain-ollama>=0.1.0
 ```
 
 3. **Download a model:**

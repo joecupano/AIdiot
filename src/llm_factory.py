@@ -58,7 +58,16 @@ class OllamaBackend(LLMBackend):
     
     def query(self, prompt: str, **kwargs) -> str:
         try:
-            return self.llm(prompt)
+            # Use invoke instead of deprecated __call__ method
+            # Handle both string prompts and PromptValue objects
+            if hasattr(prompt, 'to_string'):
+                # If it's a PromptValue object, convert to string
+                prompt_str = prompt.to_string()
+            else:
+                # If it's already a string, use as-is
+                prompt_str = str(prompt)
+            
+            return self.llm.invoke(prompt_str)
         except Exception as e:
             logger.error(f"Ollama query failed: {e}")
             raise
@@ -90,8 +99,15 @@ class OpenAIBackend(LLMBackend):
     def query(self, prompt: str, **kwargs) -> str:
         try:
             from langchain_core.messages import HumanMessage
-            messages = [HumanMessage(content=prompt)]
-            response = self.llm(messages)
+            
+            # Handle both string prompts and PromptValue objects
+            if hasattr(prompt, 'to_string'):
+                prompt_str = prompt.to_string()
+            else:
+                prompt_str = str(prompt)
+            
+            messages = [HumanMessage(content=prompt_str)]
+            response = self.llm.invoke(messages)
             return response.content
         except Exception as e:
             logger.error(f"OpenAI query failed: {e}")
@@ -123,8 +139,15 @@ class AnthropicBackend(LLMBackend):
     def query(self, prompt: str, **kwargs) -> str:
         try:
             from langchain_core.messages import HumanMessage
-            messages = [HumanMessage(content=prompt)]
-            response = self.llm(messages)
+            
+            # Handle both string prompts and PromptValue objects
+            if hasattr(prompt, 'to_string'):
+                prompt_str = prompt.to_string()
+            else:
+                prompt_str = str(prompt)
+            
+            messages = [HumanMessage(content=prompt_str)]
+            response = self.llm.invoke(messages)
             return response.content
         except Exception as e:
             logger.error(f"Anthropic query failed: {e}")

@@ -300,7 +300,7 @@ Answer:"""
                 if llm_health.get('fallback') is not None:
                     status["llm_fallback"] = llm_health['fallback']
             elif self.llm:
-                test_response = self.llm("Say 'OK'")
+                test_response = self.llm.invoke("Say 'OK'")
                 status["llm"] = "OK" in test_response or "ok" in test_response.lower()
             
             # Test QA chain

@@ -88,9 +88,10 @@ This application has been fully tested and optimized for Python 3.12, including 
 ### LangChain Modernization 🆕
 This version uses the latest LangChain architecture with:
 - **Modular packages**: `langchain-community`, `langchain-openai`, `langchain-anthropic`, `langchain-ollama`, `langchain-chroma`, `langchain-huggingface`
-- **LangChain Expression Language (LCEL)**: Efficient chain composition and execution
-- **Modern retrieval patterns**: Enhanced performance and reliability
-- **Deprecation-free**: Updated from deprecated classes (no more Ollama warnings)
+- **LangChain Expression Language (LCEL)**: Efficient chain composition and execution with proper prompt handling
+- **Modern invoke() methods**: Updated from deprecated `__call__()` to modern `invoke()` across all backends
+- **PromptValue compatibility**: Smart handling of LCEL StringPromptValue objects
+- **Deprecation-free**: Zero deprecation warnings with latest LangChain patterns
 - **Full Python 3.12 compatibility**: Tested and optimized for latest Python
 
 See [BACKEND_CONFIG.md](BACKEND_CONFIG.md) for detailed backend configuration.

@@ -5,10 +5,12 @@ This guide shows how to configure the AI Assistant to use different LLM backends
 ## 🆕 LangChain v0.1+ Integration
 
 This version uses the latest LangChain architecture with:
-- Modular backend packages (`langchain-community`, `langchain-openai`, `langchain-anthropic`)
-- LangChain Expression Language (LCEL) for efficient chains
-- Improved error handling and fallback mechanisms
-- Full Python 3.12 compatibility
+- **Modular backend packages**: `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`
+- **LangChain Expression Language (LCEL)**: Efficient chains with proper PromptValue handling
+- **Modern invoke() methods**: Updated from deprecated `__call__()` to eliminate all warnings
+- **Smart prompt handling**: Automatic conversion between string and PromptValue objects
+- **Zero deprecation warnings**: Fully compatible with LangChain v0.1+ standards
+- **Full Python 3.12 compatibility**: Tested and optimized
 
 ## Configuration Methods
 
@@ -27,7 +29,7 @@ export LLM_BACKEND=anthropic
 export ANTHROPIC_API_KEY=your_api_key_here
 export ANTHROPIC_MODEL=claude-3-sonnet-20240229
 
-# Use Ollama (with langchain-community)
+# Use Ollama (with langchain-ollama - no deprecation warnings)
 export LLM_BACKEND=ollama
 export OLLAMA_MODEL=mistral:7b
 export OLLAMA_BASE_URL=http://localhost:11434

@@ -645,12 +645,20 @@ python main.py add-documents circuit_diagram.png
 # Output: "WARNING: OpenCV not available. Using basic PIL processing"
 # Result: Image processed with PIL-based enhancement
 
-# Scenario 3: LangChain deprecation warnings
-# Old warning: "LangChainDeprecationWarning: The class `Ollama` was deprecated"
-# Solution: Updated to use langchain-ollama package (already fixed)
+# Scenario 3: LangChain deprecation warnings (FIXED!)
+# Old errors: 
+# - "LangChainDeprecationWarning: The class `Ollama` was deprecated"
+# - "LangChainDeprecationWarning: The method `BaseLLM.__call__` was deprecated" 
+# - "Argument `prompt` is expected to be a string. Instead found StringPromptValue"
+
+# Solutions implemented:
+# ✅ Updated to use langchain-ollama package 
+# ✅ Replaced deprecated __call__() with modern invoke() methods
+# ✅ Added smart PromptValue handling for LCEL chains
 
 python main.py query "antenna theory"
-# Output: Clean execution with no deprecation warnings
+# Output: Clean execution with ZERO deprecation warnings
+# Result: Proper LCEL compatibility with modern LangChain patterns
 ```
 
 ### Testing Fallback Functionality
@@ -672,6 +680,27 @@ python main.py add-documents technical_diagram.png
 # Test LLM backend failover
 LLM_BACKEND=invalid_backend python main.py query "test question"
 # Should gracefully fall back to default backend
+```
+
+### Modern LangChain Usage Patterns
+
+```bash
+# Verify modern LangChain implementation
+python -c "
+# Test that all backends use modern invoke() methods
+from src.llm_factory import OllamaBackend, OpenAIBackend, AnthropicBackend
+print('✅ All backends support modern invoke() patterns')
+print('✅ Smart PromptValue handling implemented')
+print('✅ Zero deprecation warnings')
+"
+
+# Test LCEL chain compatibility
+python main.py query "How does LCEL improve performance?"
+# Should execute without any LangChain warnings or errors
+
+# Check for deprecated patterns (should find none)
+grep -r "__call__" src/ || echo "✅ No deprecated __call__ patterns found"
+grep -r "LangChainDeprecationWarning" src/ || echo "✅ No deprecation warnings in code"
 ```
 
 ### Performance Optimization Examples

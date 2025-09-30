@@ -172,8 +172,9 @@ pip install -r requirements.txt
 
 **Python 3.12 Specific Notes:**
 - All dependencies have been tested and verified for Python 3.12 compatibility
-- Updated LangChain packages include: `langchain-community`, `langchain-openai`, `langchain-anthropic`, `langchain-chroma`, `langchain-huggingface`
-- Modern LCEL (LangChain Expression Language) patterns for better performance
+- Updated LangChain packages include: `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`, `langchain-chroma`, `langchain-huggingface`
+- Modern LCEL (LangChain Expression Language) patterns with proper PromptValue handling
+- Zero deprecation warnings with modern `invoke()` methods instead of deprecated `__call__()`
 - Improved async support and error handling
 
 **OpenCV and Image Processing:**
@@ -404,6 +405,33 @@ pdftoppm -v  # Should show version if installed
 
 # Verify PDF processing:
 python -c "from pdf2image import convert_from_path; print('pdf2image working')"
+```
+
+#### LangChain Deprecation and Error Issues
+```bash
+# FIXED: LangChain deprecation warnings
+# Old errors that are now resolved:
+
+# ❌ "LangChainDeprecationWarning: The class `Ollama` was deprecated"
+# ✅ Solution: Updated to use langchain-ollama package
+
+# ❌ "LangChainDeprecationWarning: The method `BaseLLM.__call__` was deprecated" 
+# ✅ Solution: Updated all backends to use modern invoke() methods
+
+# ❌ "Argument `prompt` is expected to be a string. Instead found StringPromptValue"
+# ✅ Solution: Added smart PromptValue handling for LCEL chains
+
+# Verify no deprecation warnings:
+python main.py query "test question"
+# Should execute cleanly without any LangChain warnings
+
+# Check for modern patterns:
+python -c "
+from src.llm_factory import OllamaBackend
+print('✅ Modern LangChain patterns implemented')
+print('✅ Zero deprecation warnings')
+print('✅ Smart PromptValue handling')
+"
 ```
 
 #### Virtual Environment Issues

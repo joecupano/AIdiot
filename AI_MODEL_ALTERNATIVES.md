@@ -6,10 +6,11 @@ This document outlines alternatives to Ollama + Mistral 7B for the AIdiot AI Ass
 
 All alternatives listed below are compatible with the updated LangChain architecture featuring:
 - **Modular packages**: `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`
-- **LangChain Expression Language (LCEL)**: Modern chain composition
+- **LangChain Expression Language (LCEL)**: Modern chain composition with proper PromptValue handling
+- **Modern invoke() methods**: All backends updated from deprecated `__call__()` to `invoke()`
 - **Python 3.12 support**: Full compatibility with latest Python
 - **Improved error handling**: Graceful fallbacks for missing dependencies
-- **No deprecation warnings**: Updated from deprecated Ollama class to `langchain-ollama`
+- **Zero deprecation warnings**: Fully modernized with latest LangChain patterns
 - **Robust processing**: OpenCV headless support, Poppler fallbacks
 
 ## 🔄 **Local AI Alternatives to Ollama**
@@ -23,14 +24,19 @@ All alternatives listed below are compatible with the updated LangChain architec
 - **Best For**: Desktop users who prefer GUI management
 
 ```python
-# LangChain integration example
+# LangChain integration example with modern invoke() pattern
 from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
 
 llm = ChatOpenAI(
     base_url="http://localhost:1234/v1",
     api_key="not-needed",
     model="your-model-name"
 )
+
+# Modern usage with invoke() - no deprecation warnings
+response = llm.invoke([HumanMessage(content="Your question here")])
+print(response.content)
 ```
 
 ### 2. **text-generation-webui (oobabooga)**

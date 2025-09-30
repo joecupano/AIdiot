@@ -119,7 +119,7 @@ sources = result.get("source_documents", [])
 **After:**
 ```python
 answer = self.qa_chain.invoke(question)
-sources = self.retriever.get_relevant_documents(question) if include_sources else []
+sources = self.retriever.invoke(question) if include_sources else []
 ```
 
 ## Benefits of These Changes

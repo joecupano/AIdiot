@@ -418,6 +418,9 @@ python -c "from pdf2image import convert_from_path; print('pdf2image working')"
 # ❌ "LangChainDeprecationWarning: The method `BaseLLM.__call__` was deprecated" 
 # ✅ Solution: Updated all backends to use modern invoke() methods
 
+# ❌ "LangChainDeprecationWarning: The method `BaseRetriever.get_relevant_documents` was deprecated"
+# ✅ Solution: Updated retriever to use modern invoke() method
+
 # ❌ "Argument `prompt` is expected to be a string. Instead found StringPromptValue"
 # ✅ Solution: Added smart PromptValue handling for LCEL chains
 

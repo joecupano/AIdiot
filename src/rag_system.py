@@ -202,7 +202,7 @@ Answer:"""
             
             # Get source documents separately if requested
             if include_sources and self.retriever:
-                source_docs = self.retriever.get_relevant_documents(question)
+                source_docs = self.retriever.invoke(question)
                 for doc in source_docs:
                     source_info = {
                         "content": doc.page_content[:200] + "...",  # First 200 chars

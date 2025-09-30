@@ -649,11 +649,13 @@ python main.py add-documents circuit_diagram.png
 # Old errors: 
 # - "LangChainDeprecationWarning: The class `Ollama` was deprecated"
 # - "LangChainDeprecationWarning: The method `BaseLLM.__call__` was deprecated" 
+# - "LangChainDeprecationWarning: The method `BaseRetriever.get_relevant_documents` was deprecated"
 # - "Argument `prompt` is expected to be a string. Instead found StringPromptValue"
 
 # Solutions implemented:
 # ✅ Updated to use langchain-ollama package 
 # ✅ Replaced deprecated __call__() with modern invoke() methods
+# ✅ Updated retriever.get_relevant_documents() to retriever.invoke()
 # ✅ Added smart PromptValue handling for LCEL chains
 
 python main.py query "antenna theory"

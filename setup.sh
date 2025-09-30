@@ -154,6 +154,30 @@ else
     fi
 fi
 
+# Check for Poppler utilities (optional but recommended for PDF OCR)
+echo -e "${YELLOW}Checking Poppler utilities for PDF processing...${NC}"
+if command -v pdftoppm &> /dev/null; then
+    poppler_version=$(pdftoppm -v 2>&1 | head -1 | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "installed")
+    echo -e "${GREEN}✅ Poppler utilities found: $poppler_version${NC}"
+else
+    echo -e "${YELLOW}⚠️  Poppler utilities not found (recommended for better PDF OCR)${NC}"
+    echo -e "${YELLOW}Install with: sudo apt install poppler-utils${NC}"
+    echo -e "${CYAN}Note: Without Poppler, PDF OCR will use PyMuPDF fallback (slower but functional)${NC}"
+    read -p "Install Poppler utilities now? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        sudo apt install -y poppler-utils
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}✅ Poppler utilities installed${NC}"
+        else
+            echo -e "${RED}❌ Failed to install Poppler utilities${NC}"
+            echo -e "${CYAN}💡 Continuing with PyMuPDF fallback for PDF OCR${NC}"
+        fi
+    else
+        echo -e "${CYAN}💡 Continuing with PyMuPDF fallback for PDF OCR${NC}"
+    fi
+fi
+
 # Check for additional useful packages
 echo -e "${YELLOW}Installing additional system dependencies...${NC}"
 sudo apt install -y curl wget git

@@ -1,20 +1,20 @@
 # AIdiot Usage Examples
 
-Practical examples of using the AI Assistant with the modern LangChain architecture and Python 3.12.
+Practical examples of using the AI Assistant with the modern LangChain architecture, Python 3.12, and robust error handling with automatic fallbacks.
 
 ## 🚀 **Getting Started**
 
 ```bash
-# Initial setup with Python 3.12
+# Initial setup with Python 3.12 and dependency checking
 python main.py setup
 
-# Add your first document (PDF manual)
+# Add your first document (PDF manual) - with automatic OCR fallback
 python main.py add-documents "ARRL_Antenna_Book.pdf"
 
-# Ask your first question  
+# Ask your first question using modern LCEL chains
 python main.py query "What is the formula for dipole antenna length?"
 
-# Check system status
+# Check system status and dependency availability
 python main.py health
 python main.py stats
 ```
@@ -51,7 +51,28 @@ python main.py add-documents ./documents/ --filter "*.pdf,*.png,*.jpg"
 python main.py add-documents technical_manual.pdf --metadata '{"category": "manual", "domain": "rf"}'
 
 # Process with specific OCR settings for technical diagrams
+# Note: Automatically uses PyMuPDF fallback if Poppler unavailable
 python main.py add-documents circuit_diagram.png --ocr-mode advanced
+
+# Process image-heavy PDF with fallback handling
+# System will try pdf2image first, then PyMuPDF if Poppler missing
+python main.py add-documents schematic_collection.pdf --force-ocr
+```
+
+### Dependency Fallback Examples
+
+```bash
+# Check what dependencies are available
+python -c "from src.document_processor import CV2_AVAILABLE, PDF2IMAGE_AVAILABLE; print(f'OpenCV: {CV2_AVAILABLE}, pdf2image: {PDF2IMAGE_AVAILABLE}')"
+
+# Process documents without OpenCV (headless mode)
+# System automatically uses PIL-based processing
+export CV2_DISABLE=1
+python main.py add-documents technical_diagram.png
+
+# Process PDFs without Poppler
+# System automatically uses PyMuPDF fallback for OCR
+python main.py add-documents --force-ocr manual_scan.pdf
 ```
 
 ## 💬 **Interactive Mode Examples**
@@ -601,6 +622,76 @@ python main.py stats
 # Restart if memory usage becomes high
 # Stop: Ctrl+C
 # Restart: python main.py serve
+```
+
+## 🔧 **Error Handling and Troubleshooting Examples**
+
+### Dependency Fallback Scenarios
+
+```bash
+# Scenario 1: Missing Poppler utilities
+# Error: "Unable to get page count. Is poppler installed and in PATH?"
+# Solution: System automatically uses PyMuPDF fallback
+
+python main.py add-documents scanned_manual.pdf
+# Output: "WARNING: pdf2image not available - using PyMuPDF fallback for PDF OCR"
+# Result: Document processed successfully with slower but functional OCR
+
+# Scenario 2: Missing OpenCV in headless environment  
+# Error: libGL.so.1 errors in Docker/containers
+# Solution: System uses opencv-python-headless and PIL fallback
+
+python main.py add-documents circuit_diagram.png
+# Output: "WARNING: OpenCV not available. Using basic PIL processing"
+# Result: Image processed with PIL-based enhancement
+
+# Scenario 3: LangChain deprecation warnings
+# Old warning: "LangChainDeprecationWarning: The class `Ollama` was deprecated"
+# Solution: Updated to use langchain-ollama package (already fixed)
+
+python main.py query "antenna theory"
+# Output: Clean execution with no deprecation warnings
+```
+
+### Testing Fallback Functionality
+
+```bash
+# Test PDF processing without Poppler
+# Temporarily rename pdf2image to simulate missing Poppler
+pip uninstall pdf2image
+python main.py add-documents test_manual.pdf
+# Should work with PyMuPDF fallback
+pip install pdf2image  # Restore when done
+
+# Test headless operation  
+# Simulate headless environment
+export DISPLAY=""
+python main.py add-documents technical_diagram.png
+# Should work with PIL-based processing
+
+# Test LLM backend failover
+LLM_BACKEND=invalid_backend python main.py query "test question"
+# Should gracefully fall back to default backend
+```
+
+### Performance Optimization Examples
+
+```bash
+# Check what processing methods are available
+python -c "
+from src.document_processor import CV2_AVAILABLE, PDF2IMAGE_AVAILABLE
+print(f'OpenCV available: {CV2_AVAILABLE}')
+print(f'pdf2image available: {PDF2IMAGE_AVAILABLE}')
+print('Optimal setup:' if (CV2_AVAILABLE and PDF2IMAGE_AVAILABLE) else 'Fallback mode:')
+"
+
+# Optimize for batch processing
+# Process multiple documents efficiently
+python main.py add-documents ./large_document_set/ --batch-size 10
+
+# Monitor processing performance
+time python main.py add-documents complex_schematic.pdf
+# Compare performance with/without optimal dependencies
 ```
 
 This comprehensive set of examples should help users get the most out of the AIdiot Technical AI Assistant!

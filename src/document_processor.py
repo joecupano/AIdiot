@@ -1,4 +1,5 @@
 import os
+import io
 import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional
@@ -6,11 +7,18 @@ import fitz  # PyMuPDF
 import pytesseract
 from PIL import Image
 import numpy as np
-from pdf2image import convert_from_path
 import requests
 from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# Import pdf2image with error handling for Poppler dependency
+try:
+    from pdf2image import convert_from_path
+    PDF2IMAGE_AVAILABLE = True
+except ImportError as e:
+    PDF2IMAGE_AVAILABLE = False
+    convert_from_path = None
 
 from .config import (
     TESSERACT_PATH, DPI, CHUNK_SIZE, CHUNK_OVERLAP,
@@ -29,6 +37,13 @@ except ImportError as e:
     CV2_AVAILABLE = False
     logger.warning(f"OpenCV not available: {e}")
     logger.warning("Image processing features will be limited")
+
+# Log PDF2IMAGE availability
+if PDF2IMAGE_AVAILABLE:
+    logger.info("pdf2image (with Poppler) loaded successfully")
+else:
+    logger.warning("pdf2image not available - using PyMuPDF fallback for PDF OCR")
+    logger.info("Install Poppler for better PDF image conversion: https://poppler.freedesktop.org/")
 
 # Configure Tesseract path
 if os.path.exists(TESSERACT_PATH):
@@ -86,29 +101,72 @@ class DocumentProcessor:
         return documents
     
     def _ocr_pdf_page(self, pdf_path: Path, page_num: int) -> str:
-        """Extract text from PDF page using OCR."""
+        """Extract text from PDF page using OCR with Poppler fallback."""
         try:
-            # Convert PDF page to image
-            images = convert_from_path(
-                str(pdf_path),
-                dpi=DPI,
-                first_page=page_num + 1,
-                last_page=page_num + 1
-            )
-            
-            if images:
-                # Enhance image for better OCR
-                img_array = np.array(images[0])
-                enhanced_img = self._enhance_image_for_ocr(img_array)
+            if PDF2IMAGE_AVAILABLE:
+                # Primary method: Use pdf2image (requires Poppler)
+                logger.debug(f"Using pdf2image for page {page_num}")
+                images = convert_from_path(
+                    str(pdf_path),
+                    dpi=DPI,
+                    first_page=page_num + 1,
+                    last_page=page_num + 1
+                )
                 
-                # Perform OCR
-                text = pytesseract.image_to_string(enhanced_img, config='--psm 6')
-                return text
+                if images:
+                    # Enhance image for better OCR
+                    img_array = np.array(images[0])
+                    enhanced_img = self._enhance_image_for_ocr(img_array)
+                    
+                    # Perform OCR
+                    text = pytesseract.image_to_string(enhanced_img, config='--psm 6')
+                    return text
+            else:
+                # Fallback method: Use PyMuPDF (no Poppler required)
+                logger.warning(f"pdf2image not available, using PyMuPDF fallback for page {page_num}")
+                return self._ocr_pdf_page_pymupdf_fallback(pdf_path, page_num)
                 
         except Exception as e:
             logger.error(f"OCR failed for page {page_num}: {str(e)}")
+            # Try fallback if primary method failed
+            if PDF2IMAGE_AVAILABLE:
+                logger.info(f"Attempting PyMuPDF fallback for page {page_num}")
+                try:
+                    return self._ocr_pdf_page_pymupdf_fallback(pdf_path, page_num)
+                except Exception as fallback_error:
+                    logger.error(f"Fallback OCR also failed for page {page_num}: {str(fallback_error)}")
             
         return ""
+    
+    def _ocr_pdf_page_pymupdf_fallback(self, pdf_path: Path, page_num: int) -> str:
+        """Fallback OCR method using PyMuPDF (no Poppler dependency)."""
+        try:
+            # Open PDF with PyMuPDF
+            doc = fitz.open(str(pdf_path))
+            page = doc.load_page(page_num)
+            
+            # Convert page to image using PyMuPDF
+            # Higher DPI for better OCR quality
+            mat = fitz.Matrix(DPI/72, DPI/72)  # DPI/72 gives the scaling factor
+            pix = page.get_pixmap(matrix=mat)
+            
+            # Convert to PIL Image
+            img_data = pix.tobytes("ppm")
+            img = Image.open(io.BytesIO(img_data))
+            
+            # Convert to numpy array for enhancement
+            img_array = np.array(img)
+            enhanced_img = self._enhance_image_for_ocr(img_array)
+            
+            # Perform OCR
+            text = pytesseract.image_to_string(enhanced_img, config='--psm 6')
+            
+            doc.close()
+            return text
+            
+        except Exception as e:
+            logger.error(f"PyMuPDF fallback OCR failed for page {page_num}: {str(e)}")
+            return ""
     
     def process_image(self, file_path: Path) -> List[Document]:
         """Process images and extract text using OCR."""

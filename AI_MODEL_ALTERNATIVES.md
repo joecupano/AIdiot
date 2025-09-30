@@ -5,10 +5,12 @@ This document outlines alternatives to Ollama + Mistral 7B for the AIdiot AI Ass
 ## 🆕 **LangChain v0.1+ Integration**
 
 All alternatives listed below are compatible with the updated LangChain architecture featuring:
-- Modular package imports
-- LangChain Expression Language (LCEL) 
-- Python 3.12 support
-- Improved error handling and fallback mechanisms
+- **Modular packages**: `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`
+- **LangChain Expression Language (LCEL)**: Modern chain composition
+- **Python 3.12 support**: Full compatibility with latest Python
+- **Improved error handling**: Graceful fallbacks for missing dependencies
+- **No deprecation warnings**: Updated from deprecated Ollama class to `langchain-ollama`
+- **Robust processing**: OpenCV headless support, Poppler fallbacks
 
 ## 🔄 **Local AI Alternatives to Ollama**
 
@@ -77,7 +79,7 @@ MODELS = {
     "codellama:13b": "Best coding performance in this class"
 }
 ```
-- **LangChain Package**: `langchain-community.llms.Ollama`
+- **LangChain Package**: `langchain-ollama` (modern, no deprecation warnings)
 - **Pros**: Meta backing, excellent community support, code-optimized variants
 - **Technical Focus**: Code Llama variants excel at technical content
 
@@ -88,7 +90,7 @@ MODELS = {
     "phi3:medium": "14B params, high quality outputs"
 }
 ```
-- **LangChain Package**: `langchain-community.llms.Ollama`
+- **LangChain Package**: `langchain-ollama` (modern, no deprecation warnings)
 - **Pros**: Efficient, high quality, MIT license
 - **Technical Focus**: Strong reasoning capabilities for technical content
 
@@ -99,7 +101,7 @@ MODELS = {
     "gemma2:27b": "Large context, high-quality outputs"
 }
 ```
-- **LangChain Package**: `langchain-community.llms.Ollama`
+- **LangChain Package**: `langchain-ollama` (modern, no deprecation warnings)
 - **Pros**: Google backing, permissive license, efficient
 - **Technical Focus**: Good general technical knowledge
 
@@ -118,7 +120,7 @@ MODELS = {
 
 #### **Mixtral 8x7B**
 - **Focus**: Mixture of experts model, excellent performance
-- **LangChain Package**: `langchain-community.llms.Ollama`
+- **LangChain Package**: `langchain-ollama` (modern, no deprecation warnings)
 - **Advantages**: Better than 7B models while remaining efficient
 - **Performance**: Excellent for complex technical reasoning
 
@@ -205,12 +207,12 @@ llm = ChatAnthropic(
 ### **Local + Cloud Fallback (LCEL Implementation)**
 ```python
 from langchain_core.runnables import RunnableLambda
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from langchain_openai import ChatOpenAI
 
 class HybridLLM:
     def __init__(self):
-        self.local_model = Ollama(model="mistral:7b")
+        self.local_model = OllamaLLM(model="mistral:7b")
         self.cloud_model = ChatOpenAI(model="gpt-3.5-turbo")
     
     def create_chain(self):
@@ -229,8 +231,8 @@ class HybridLLM:
 from langchain_core.runnables import RunnableBranch
 
 TASK_ROUTING = {
-    "code": Ollama(model="codellama:7b"),
-    "general": Ollama(model="mistral:7b"), 
+    "code": OllamaLLM(model="codellama:7b"),
+    "general": OllamaLLM(model="mistral:7b"), 
     "complex": ChatOpenAI(model="gpt-4"),
     "summary": ChatAnthropic(model="claude-3-haiku-20240307")
 }

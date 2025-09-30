@@ -6,15 +6,18 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
 
 🚀 **Core Capabilities:**
 - **Multi-format Document Processing**: PDF files, image-based PDFs, technical diagrams (PNG, JPG, TIFF)
-- **OCR Technology**: Extract text and component values from technical diagrams
+- **Smart OCR Technology**: Extract text and component values from technical diagrams with automatic fallbacks
+- **Robust PDF Processing**: Automatic Poppler fallback using PyMuPDF when Poppler unavailable
+- **Headless-Ready**: OpenCV-free operation for containerized/server deployments
 - **Web Content Integration**: Process technical articles and documentation from URLs
 - **Configurable Domain Knowledge**: Optimized for technical terminology and concepts (customizable)
 - **Dual Interface**: Command-line tool and REST API for web applications
 
 🧠 **AI-Powered Analysis:**
-- **Multi-Backend LLM Support**: Choose from local (Ollama, LocalAI) or cloud (OpenAI, Anthropic) models
+- **Multi-Backend LLM Support**: Choose from local (Ollama via langchain-ollama, LocalAI) or cloud (OpenAI, Anthropic) models
+- **Modern Architecture**: Built with LangChain v0.1+ using LCEL and modular packages (langchain-community, langchain-openai, langchain-anthropic, langchain-ollama)
 - **Automatic Fallback**: Seamlessly switches between primary and backup LLM services
-- **Modern RAG Architecture**: Built with LangChain v0.1+ using LCEL (LangChain Expression Language)
+- **Error Recovery**: Graceful handling of missing dependencies with functional fallbacks
 - **Technical Focus**: Specialized prompts for technical design and analysis (configurable)
 - **Source Attribution**: Shows which documents contributed to each answer
 
@@ -31,6 +34,14 @@ A standalone AI solution for technical design and analysis using RAG (Retrieval-
 - **Python 3.9-3.12** - [Download from python.org](https://python.org)
 - **Ollama** (for local LLM) - [Install from ollama.ai](https://ollama.ai)
 - **Tesseract OCR** (optional) - [Download for Windows](https://github.com/UB-Mannheim/tesseract/wiki)
+- **Poppler utilities** (optional, recommended) - Improves PDF OCR performance
+
+### Dependency Management ✅
+All dependencies have graceful fallbacks:
+- **OpenCV**: Uses headless version (opencv-python-headless) to avoid GUI dependencies
+- **Poppler**: Automatic PyMuPDF fallback when Poppler unavailable
+- **Tesseract**: Graceful degradation when OCR unavailable
+- **LangChain**: Modern modular architecture with langchain-ollama, langchain-openai, etc.
 
 ### Python 3.12 Support ✅
 This application has been fully tested and optimized for Python 3.12, including updated LangChain dependencies and modern async patterns.
@@ -76,12 +87,13 @@ This application has been fully tested and optimized for Python 3.12, including 
 
 ### LangChain Modernization 🆕
 This version uses the latest LangChain architecture with:
-- Modular package imports (`langchain-community`, `langchain-openai`, etc.)
-- LangChain Expression Language (LCEL) for efficient chains
-- Modern retrieval patterns with better performance
-- Full Python 3.12 compatibility
+- **Modular packages**: `langchain-community`, `langchain-openai`, `langchain-anthropic`, `langchain-ollama`, `langchain-chroma`, `langchain-huggingface`
+- **LangChain Expression Language (LCEL)**: Efficient chain composition and execution
+- **Modern retrieval patterns**: Enhanced performance and reliability
+- **Deprecation-free**: Updated from deprecated classes (no more Ollama warnings)
+- **Full Python 3.12 compatibility**: Tested and optimized for latest Python
 
-See [LANGCHAIN_MIGRATION.md](LANGCHAIN_MIGRATION.md) for technical details.
+See [BACKEND_CONFIG.md](BACKEND_CONFIG.md) for detailed backend configuration.
 
 ### Backend Configuration
 

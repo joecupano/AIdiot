@@ -1,21 +1,23 @@
 # AIdiot - AI Assistant
 
 [![Python](https://img.shields.io/badge/python-3.9%2B%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
-[![LangChain](https://img.shields.io/badge/LangChain-v0.1%2B-green.svg)](https://python.langchain.com/)
+[![LangChain](https://img.shields.io/badge/LangChain-v0.1%2B%20LCEL-green.svg)](https://python.langchain.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
+[![Dependencies](https://img.shields.io/badge/dependencies-headless%20ready-blue.svg)]()
 [![LLM](https://img.shields.io/badge/LLM-Multi--Backend-blue.svg)](https://github.com/joecupano/AIdiot)
 
-A standalone AI solution for technical design and analysis using modern RAG (Retrieval-Augmented Generation) architecture. Process PDF files, image-based PDFs, technical diagrams, and web content with **Python 3.12 support** and **modern LangChain v0.1+ integration**.
+A standalone AI solution for technical design and analysis using modern RAG (Retrieval-Augmented Generation) architecture. Process PDF files, image-based PDFs, technical diagrams, and web content with **Python 3.12 support**, **modern LangChain v0.1+ integration**, and **robust dependency fallbacks** for headless/container deployments.
 
 ![AIdiot Demo](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=AIdiot+AI+Assistant+%7C+Python+3.12+%7C+LangChain+v0.1%2B)
 
 ## 🆕 **What's New**
 - ✅ **Python 3.12 Support** - Fully tested and optimized
-- ✅ **Modern LangChain** - Uses v0.1+ with LCEL (LangChain Expression Language)
-- ✅ **Modular Packages** - `langchain-community`, `langchain-openai`, `langchain-anthropic`
+- ✅ **Modern LangChain** - Uses v0.1+ with LCEL and langchain-ollama (no deprecation warnings)
+- ✅ **Modular Packages** - `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`
+- ✅ **Robust Fallbacks** - OpenCV headless, Poppler-free PDF OCR, graceful degradation
 - ✅ **Enhanced Performance** - Improved RAG chains and async support
-- ✅ **Better Error Handling** - Robust fallback mechanisms
+- ✅ **Container Ready** - Works in headless environments and Docker containers
 
 ## 🚀 Quick Start
 
@@ -48,7 +50,7 @@ python main.py interactive
 
 ### 🔧 Modern Backend Configuration
 ```bash
-# Default: Local Ollama with modern LangChain integration
+# Default: Local Ollama with langchain-ollama (no deprecation warnings)
 export LLM_BACKEND=ollama
 export OLLAMA_MODEL=mistral:7b
 
@@ -68,13 +70,14 @@ python setup_backends.py
 
 ## ✨ Features
 
-- 🔧 **Multi-format Processing**: PDFs, images, web content with enhanced OCR
-- 🤖 **Modern Multi-Backend AI**: Updated integrations for all LLM providers
-- 🖼️ **Advanced OCR**: Extract text and component values from technical diagrams  
+- 🔧 **Multi-format Processing**: PDFs, images, web content with enhanced OCR and fallbacks
+- 🤖 **Modern Multi-Backend AI**: langchain-ollama, langchain-openai, langchain-anthropic
+- 🖼️ **Smart OCR**: Poppler → PyMuPDF fallback, OpenCV → PIL fallback  
 - 🌐 **Dual Interface**: Enhanced CLI and REST API with Python 3.12 performance
 - 📊 **Modern RAG Architecture**: LCEL-based chains for better performance
 - 🔄 **Cross-Platform**: Full Python 3.12 support on Windows, Linux, macOS
-- ⚡ **Enhanced Performance**: Async improvements and better error handling
+- 🐳 **Container Ready**: Headless operation with opencv-python-headless
+- ⚡ **Enhanced Performance**: Async improvements and graceful degradation
 
 ## 📖 Documentation
 
@@ -93,6 +96,11 @@ python setup_backends.py
 - **10GB free disk space**
 - **[Ollama](https://ollama.ai)** for local AI models (recommended)
 - **Modern LangChain packages** (installed automatically)
+
+### Optional Dependencies (with Automatic Fallbacks)
+- **Poppler utilities** - Improves PDF OCR (PyMuPDF fallback if unavailable)
+- **Tesseract OCR** - Enhanced image text extraction (graceful degradation)
+- **OpenCV** - Uses headless version (PIL fallback for image processing)
 
 ## 📊 Updated Usage Examples
 

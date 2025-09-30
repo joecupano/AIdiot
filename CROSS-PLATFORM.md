@@ -28,10 +28,18 @@ AIdiot AI Assistant is fully cross-platform with Python 3.12 support and modern 
 ## 🔧 **Platform-Specific Features**
 
 ### Modern LangChain Integration
-- **Modular Packages**: `langchain-community`, `langchain-openai`, `langchain-anthropic`
+- **Modular Packages**: `langchain-ollama`, `langchain-openai`, `langchain-anthropic`, `langchain-community`
 - **LCEL Chains**: LangChain Expression Language works on all platforms
 - **Backend Flexibility**: Easy switching between local and cloud LLMs
+- **No Deprecation Warnings**: Updated from deprecated Ollama class to langchain-ollama
 - **Error Handling**: Improved cross-platform error handling and fallbacks
+
+### Dependency Resilience & Fallbacks
+- **OpenCV Headless**: Uses `opencv-python-headless` to avoid GUI dependencies on servers
+- **Poppler Fallback**: Automatic PyMuPDF fallback when Poppler utilities unavailable
+- **Tesseract Graceful Degradation**: Works without OCR, warns when unavailable
+- **PIL Image Processing**: Fallback image processing when OpenCV unavailable
+- **Cross-Platform Paths**: Automatic platform detection and path handling
 
 ### File Paths & Configuration
 - **Automatic Detection**: Uses `pathlib` for cross-platform path handling
@@ -221,6 +229,24 @@ pip list | grep langchain
 # Solution: Install OpenGL libraries OR use headless OpenCV
 sudo apt install libgl1-mesa-glx libglib2.0-0
 # Alternative: Already fixed with opencv-python-headless package
+
+# Poppler/PDF OCR dependency issues (All Platforms)
+# Error: "Unable to get page count. Is poppler installed and in PATH?"
+# Solution: Install Poppler OR use automatic PyMuPDF fallback
+
+# Linux/Ubuntu:
+sudo apt install poppler-utils
+
+# macOS:
+brew install poppler
+
+# Windows (multiple options):
+# Option 1: conda install -c conda-forge poppler
+# Option 2: Download from https://blog.alivate.com.au/poppler-windows/
+# Option 3: pip install pdf2image and download Poppler binaries
+
+# Alternative: Already implemented - automatic PyMuPDF fallback
+# System will work without Poppler (slower but functional)
 ```
 
 ## 🚀 **Performance Comparison (Python 3.12)**

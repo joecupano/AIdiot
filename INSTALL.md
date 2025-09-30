@@ -379,6 +379,33 @@ xcode-select --install
 TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
 ```
 
+#### Poppler/PDF OCR Issues
+```bash
+# Error: "Unable to get page count. Is poppler installed and in PATH?"
+# This error occurs when pdf2image can't find Poppler utilities
+
+# SOLUTION 1: Install Poppler (Recommended)
+# Linux/Ubuntu:
+sudo apt install poppler-utils
+
+# macOS:
+brew install poppler
+
+# Windows:
+# Download from: https://blog.alivate.com.au/poppler-windows/
+# Or use conda: conda install -c conda-forge poppler
+
+# SOLUTION 2: Automatic Fallback (Already Implemented)
+# If Poppler is not available, the system automatically uses
+# PyMuPDF fallback which is slower but doesn't require Poppler
+
+# Check if Poppler is working:
+pdftoppm -v  # Should show version if installed
+
+# Verify PDF processing:
+python -c "from pdf2image import convert_from_path; print('pdf2image working')"
+```
+
 #### Virtual Environment Issues
 ```bash
 # Error: Cannot activate virtual environment

@@ -75,6 +75,15 @@ if (Test-Path $tesseractPath) {
     Write-Host "Download from: https://github.com/UB-Mannheim/tesseract/wiki" -ForegroundColor Yellow
 }
 
+# Check for Poppler utilities (optional but recommended for PDF OCR)
+Write-Host "Checking Poppler utilities for PDF processing..." -ForegroundColor Yellow
+Write-Host "ℹ️  Poppler utilities improve PDF OCR performance" -ForegroundColor Cyan
+Write-Host "Without Poppler, the system will use PyMuPDF fallback (slower but functional)" -ForegroundColor Cyan
+Write-Host "To install Poppler on Windows:" -ForegroundColor Yellow
+Write-Host "  1. Download from: https://blog.alivate.com.au/poppler-windows/" -ForegroundColor Yellow
+Write-Host "  2. Or use conda: conda install -c conda-forge poppler" -ForegroundColor Yellow
+Write-Host "  3. Or use pip: pip install pdf2image and install Poppler binaries" -ForegroundColor Yellow
+
 # Run setup
 Write-Host "Running system setup..." -ForegroundColor Yellow
 python main.py setup

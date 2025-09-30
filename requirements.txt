@@ -14,9 +14,9 @@ sentence-transformers>=2.2.2
 # Document processing - Updated for Python 3.12
 pypdf2>=3.0.1
 pymupdf>=1.23.21
-pdf2image>=1.17.0
+pdf2image>=1.17.0  # Note: Requires Poppler system dependency for optimal PDF OCR
 pillow>=10.2.0
-pytesseract>=0.3.10
+pytesseract>=0.3.10  # Note: Requires Tesseract OCR system dependency
 
 # Image processing for schematics - Updated versions (headless for Linux compatibility)
 opencv-python-headless>=4.9.0.80

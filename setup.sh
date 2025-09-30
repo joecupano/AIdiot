@@ -69,13 +69,23 @@ source venv/bin/activate
 echo -e "${YELLOW}Upgrading pip...${NC}"
 pip install --upgrade pip setuptools wheel
 
+# Install system libraries for OpenCV (headless)
+echo -e "${YELLOW}Installing system libraries for image processing...${NC}"
+sudo apt install -y libglib2.0-0 libsm6 libxext6 libxrender-dev libgomp1 libglib2.0-dev
+
+# Note: We use opencv-python-headless to avoid OpenGL dependencies
+echo -e "${CYAN}📝 Note: Using OpenCV headless version to avoid OpenGL dependencies${NC}"
+
 # Install Python dependencies
 echo -e "${YELLOW}Installing Python dependencies...${NC}"
 pip install -r requirements.txt
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Dependencies installed${NC}"
+    echo -e "${GREEN}✅ OpenCV headless version installed (no GUI dependencies)${NC}"
 else
     echo -e "${RED}❌ Failed to install dependencies${NC}"
+    echo -e "${YELLOW}💡 If you encounter OpenGL errors, try:${NC}"
+    echo -e "${YELLOW}   sudo apt install libgl1-mesa-glx libglib2.0-0${NC}"
     exit 1
 fi
 

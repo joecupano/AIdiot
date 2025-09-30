@@ -5,7 +5,6 @@ from typing import List, Dict, Any, Optional
 import fitz  # PyMuPDF
 import pytesseract
 from PIL import Image
-import cv2
 import numpy as np
 from pdf2image import convert_from_path
 import requests
@@ -18,11 +17,22 @@ from .config import (
     REQUEST_TIMEOUT, MAX_RETRIES, DOMAIN_TOPICS
 )
 
+# Setup logger first
+logger = logging.getLogger(__name__)
+
+# Import OpenCV with error handling for headless environments
+try:
+    import cv2
+    CV2_AVAILABLE = True
+    logger.info("OpenCV loaded successfully")
+except ImportError as e:
+    CV2_AVAILABLE = False
+    logger.warning(f"OpenCV not available: {e}")
+    logger.warning("Image processing features will be limited")
+
 # Configure Tesseract path
 if os.path.exists(TESSERACT_PATH):
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
-
-logger = logging.getLogger(__name__)
 
 
 class DocumentProcessor:
@@ -105,15 +115,21 @@ class DocumentProcessor:
         documents = []
         
         try:
-            # Load and enhance image
-            img = cv2.imread(str(file_path))
-            enhanced_img = self._enhance_image_for_analysis(img)
-            
-            # Perform OCR with specialized config for technical content
-            text = pytesseract.image_to_string(
-                enhanced_img,
-                config='--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,()[]{}+-=*/:;'
-            )
+            if not CV2_AVAILABLE:
+                logger.warning("OpenCV not available. Using basic PIL processing for image.")
+                # Fallback to PIL-only processing
+                img = Image.open(file_path)
+                text = pytesseract.image_to_string(img)
+            else:
+                # Load and enhance image with OpenCV
+                img = cv2.imread(str(file_path))
+                enhanced_img = self._enhance_image_for_analysis(img)
+                
+                # Perform OCR with specialized config for technical content
+                text = pytesseract.image_to_string(
+                    enhanced_img,
+                    config='--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,()[]{}+-=*/:;'
+                )
             
             # Extract technical information and labels
             technical_info = self._extract_technical_info(text)
@@ -140,6 +156,10 @@ class DocumentProcessor:
     
     def _enhance_image_for_ocr(self, img_array: np.ndarray) -> np.ndarray:
         """Enhance image for better OCR results."""
+        if not CV2_AVAILABLE:
+            logger.warning("OpenCV not available. Returning original image array.")
+            return img_array
+            
         # Convert to grayscale
         if len(img_array.shape) == 3:
             gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
@@ -160,6 +180,10 @@ class DocumentProcessor:
     
     def _enhance_image_for_analysis(self, img: np.ndarray) -> np.ndarray:
         """Enhance images for technical content recognition."""
+        if not CV2_AVAILABLE:
+            logger.warning("OpenCV not available. Returning original image.")
+            return img
+            
         # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         

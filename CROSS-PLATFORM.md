@@ -215,6 +215,12 @@ pip install --upgrade setuptools wheel
 # LangChain module resolution
 python -c "import sys; print(sys.path)"
 pip list | grep langchain
+
+# OpenCV/OpenGL dependency issues (Linux)
+# Error: libGL.so.1: cannot open shared object file
+# Solution: Install OpenGL libraries OR use headless OpenCV
+sudo apt install libgl1-mesa-glx libglib2.0-0
+# Alternative: Already fixed with opencv-python-headless package
 ```
 
 ## 🚀 **Performance Comparison (Python 3.12)**

@@ -176,6 +176,18 @@ pip install -r requirements.txt
 - Modern LCEL (LangChain Expression Language) patterns for better performance
 - Improved async support and error handling
 
+**OpenCV and Image Processing:**
+- Uses `opencv-python-headless` to avoid OpenGL dependencies on Linux servers
+- If you encounter `libGL.so.1` errors, install system libraries:
+```bash
+# Ubuntu/Debian - Install OpenGL libraries
+sudo apt install libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
+
+# Or use headless version (recommended for servers)
+pip uninstall opencv-python opencv-contrib-python
+pip install opencv-python-headless
+```
+
 **If you encounter import errors:**
 ```bash
 # Force reinstall with Python 3.12 wheels
@@ -183,6 +195,11 @@ pip install --upgrade --force-reinstall -r requirements.txt
 
 # For development installations
 pip install -e .
+
+# For OpenGL-related errors specifically
+sudo apt update
+sudo apt install libgl1-mesa-glx libglib2.0-0 libglib2.0-dev
+pip install --upgrade --force-reinstall opencv-python-headless
 ```
 
 #### Step 4: Download AI Model
